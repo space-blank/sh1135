@@ -12,11 +12,6 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    public function __construct(){
-        global $db;
-        $db = DB::connection('mysql');
-    }
-
     /**
      * 请求成功返回JSON数据
      *

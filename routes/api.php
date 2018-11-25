@@ -17,6 +17,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::group(['prefix' => 'category', 'middleware' => 'assign.city'], function () {
+Route::group(['prefix' => 'category', /*'middleware' => 'assign.city'*/], function () {
     Route::get('index', 'CategoryController@index');
+});
+
+Route::group(['prefix' => 'location', /*'middleware' => 'assign.city'*/], function () {
+    Route::get('area', 'CategoryController@getArea');
+    Route::get('street', 'CategoryController@getStreet');
 });

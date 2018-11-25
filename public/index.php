@@ -34,8 +34,7 @@ require __DIR__.'/../bootstrap/autoload.php';
 */
 
 $app = require_once __DIR__.'/../bootstrap/app.php';
-global $db_mymps;
-$db_mymps = "my_";
+
 /*
 |--------------------------------------------------------------------------
 | Run The Application

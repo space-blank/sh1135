@@ -3,21 +3,21 @@
 namespace App\Http\Models;
 
 
-class Area extends BaseModel
+class Street extends BaseModel
 {
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'area';
+    protected $table = 'street';
 
     /**
      * The primary key for the model.
      *
      * @var string
      */
-    protected $primaryKey = 'areaid';
+    protected $primaryKey = 'streetid';
 
     public $timestamps = false;
 
