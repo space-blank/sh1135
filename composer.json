@@ -20,7 +20,12 @@
         ],
         "psr-4": {
             "App\\": "app/"
-        }
+        },
+        "files":[
+            "app/Helper/common.fun.php",
+            "app/Helper/cache.fun.php",
+            "app/Helper/class.fun.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
