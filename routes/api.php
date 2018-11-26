@@ -25,3 +25,14 @@ Route::group(['prefix' => 'location', /*'middleware' => 'assign.city'*/], functi
     Route::get('area', 'CategoryController@getArea');
     Route::get('street', 'CategoryController@getStreet');
 });
+
+
+Route::prefix('auth')->group(function($router) {
+    $router->post('login', 'AuthController@login');
+    $router->post('logout', 'AuthController@logout');
+
+});
+
+Route::middleware('refresh.token')->group(function($router) {
+    $router->get('profile','UserController@profile');
+});
