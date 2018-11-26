@@ -20,7 +20,7 @@ class Controller extends BaseController
      */
     public function success($data = []){
         return response()->json([
-            'status'  => true,
+//            'status'  => true,
             'code'    => 200,
             'message' => config('errorcode.code')[200],
             'data'    => $data,
@@ -36,7 +36,7 @@ class Controller extends BaseController
      */
     public function fail($code, $data = []){
         return response()->json([
-            'status'  => false,
+//            'status'  => false,
             'code'    => $code,
             'message' => config('error,code.code')[(int) $code],
             'data'    => $data

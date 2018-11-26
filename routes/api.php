@@ -21,6 +21,12 @@ Route::group(['prefix' => 'category', /*'middleware' => 'assign.city'*/], functi
     Route::get('index', 'CategoryController@index');
 });
 
+Route::group(['prefix' => 'news', /*'middleware' => 'assign.city'*/], function () {
+    Route::get('channel', 'NewsController@getChannel');
+    Route::get('list', 'NewsController@getNews');
+    Route::get('detail', 'NewsController@getDetail');
+});
+
 Route::group(['prefix' => 'location', /*'middleware' => 'assign.city'*/], function () {
     Route::get('area', 'CategoryController@getArea');
     Route::get('street', 'CategoryController@getStreet');

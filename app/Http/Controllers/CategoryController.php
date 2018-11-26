@@ -85,6 +85,13 @@ class CategoryController extends Controller
             'list' => $area
         ]);
     }
+
+    /**
+     * 获取三级地域
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getStreet(Request $request){
         $areaid  = (int)$request->get('areaid', 1);
         $location = Street::select(['streetid', 'streetname'])->where('areaid', $areaid)->get();
