@@ -30,6 +30,11 @@ Route::group(['prefix' => 'news', /*'middleware' => 'assign.city'*/], function (
 Route::group(['prefix' => 'corp', /*'middleware' => 'assign.city'*/], function () {
     Route::get('index', 'CorpController@getCorp');
 });
+//搜索的内容列表
+Route::group(['prefix' => 'information', /*'middleware' => 'assign.city'*/], function () {
+    Route::get('list', 'InformationController@getInformation');
+    Route::get('detail', 'InformationController@getDetail');
+});
 
 Route::group(['prefix' => 'location', /*'middleware' => 'assign.city'*/], function () {
     Route::get('area', 'CategoryController@getArea');

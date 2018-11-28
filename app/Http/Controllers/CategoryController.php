@@ -26,6 +26,11 @@ class CategoryController extends Controller
             'b.catid AS childid',
             'b.catname AS childname'
         ])->leftjoin('category as b', 'b.parentid', '=', 'a.catid')
+            ->where([
+                'a.parentid' => 0,
+                'a.if_view' => 2,
+                'b.if_view' => 2,
+            ])
             ->orderBy('a.catorder')
             ->orderBy('b.catorder')->get();
 
