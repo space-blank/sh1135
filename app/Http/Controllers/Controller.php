@@ -13,16 +13,16 @@ class Controller extends BaseController
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
     /**
-     * 请求成功返回JSON数据
-     *
      * @param array $data
+     * @param string $message
      * @return \Illuminate\Http\JsonResponse
      */
-    public function success($data = []){
+    public function success($data = [], $message = 'success'){
         return response()->json([
 //            'status'  => true,
             'code'    => 200,
-            'message' => config('errorcode.code')[200],
+//            'message' => config('errorcode.code')[200],
+            'message' => $message,
             'data'    => $data,
         ]);
     }
