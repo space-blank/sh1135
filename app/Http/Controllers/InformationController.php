@@ -43,10 +43,11 @@ class InformationController extends Controller
      */
     public function getInformation(Request $request){
         $catid = $request->catid ?: 0;
+        $keyword = $request->keyword ?: '';
         $page = $request->page ?: 1;
         $pageSize = $request->pageSize ?: 10;
 
-        $query = Information::query()->orderByDesc('id');
+        $query = Information::query()->where('info_level', '>', 0)->orderByDesc('id');
         $columns = [
             'id',
             'title',
@@ -63,10 +64,18 @@ class InformationController extends Controller
             $query = $query->where('catid', $catid);
         }
 
+        if($keyword){
+            $query->where(function ($query) use ($keyword) {
+                $query->Where('title', 'like', '%'.$keyword.'%');
+                $query->orWhere('content', 'like', '%'.$keyword.'%');
+            });
+        }
+
         $result = $this->paginateLogic->paginate(
             $query,
             ['page_size'=>$pageSize, 'page_number'=>$page], $columns,
-            function($item){
+            function($item) use ($keyword){
+                $item['title'] = HighLight($item['title'], $keyword);;
                 $item['content'] = mb_substr($item['content'], 0, 50);
                 $item['begintime'] = date('y-m-d', $item['begintime']);
                 return $item;
