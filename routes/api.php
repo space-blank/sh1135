@@ -24,13 +24,12 @@ Route::group(['prefix' => 'v1'], function () {
     });
 
     Route::group(['prefix' => 'news'], function () {
-        Route::get('channel', 'NewsController@getChannel');
         Route::get('list', 'NewsController@getNews');
         Route::get('detail', 'NewsController@getDetail');
     });
 
     Route::group(['prefix' => 'corp'], function () {
-        Route::get('index', 'CorpController@getCorp');
+        Route::get('list', 'CorpController@getCorp');
     });
     //搜索的内容列表
     Route::group(['prefix' => 'information'], function () {
@@ -40,6 +39,7 @@ Route::group(['prefix' => 'v1'], function () {
 
     Route::group(['prefix' => 'location'], function () {
         Route::get('/', 'IndexController@getCity');
+        Route::get('change', 'IndexController@changeCity');
         Route::get('area', 'IndexController@getArea');
         Route::get('street', 'IndexController@getStreet');
     });

@@ -32,13 +32,14 @@ class Controller extends BaseController
      *
      * @param $code
      * @param array $data
+     * @param string $message
      * @return \Illuminate\Http\JsonResponse
      */
-    public function fail($code, $data = []){
+    public function fail($code, $data = [], $message = ''){
         return response()->json([
 //            'status'  => false,
             'code'    => $code,
-            'message' => config('error,code.code')[(int) $code],
+            'message' => $message ?: config('error,code.code')[(int) $code],
             'data'    => $data
         ]);
     }

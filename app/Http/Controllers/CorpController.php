@@ -35,6 +35,7 @@ class CorpController extends Controller
             'b.corpid AS childid',
             'b.corpname AS childname'
         ])->leftjoin('corp as b', 'b.parentid', '=', 'a.corpid')
+            ->where('a.parentid', 0)
             ->orderBy('a.corporder')
             ->orderBy('a.corpid')
             ->orderBy('b.corporder')->get();

@@ -20,19 +20,6 @@ class NewsController extends Controller
     public function __construct(PaginateLogic $paginateLogic){
         $this->paginateLogic = $paginateLogic;
     }
-    /**
-     * 获取网站新闻频道
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function getChannel(Request $request){
-        $channel = Channel::select(['catid', 'catname'])->where([
-            'parentid' => 0,
-            'if_view' => 2,
-        ])->orderBy('catorder')->get();
-        return $this->success($channel);
-    }
 
     /**
      * 获取新闻列表
@@ -41,9 +28,26 @@ class NewsController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function getNews(Request $request){
-        $catid = $request->catid ?: 0;
-        $page = $request->page ?: 1;
-        $pageSize = $request->pageSize ?: 10;
+        $rules = [
+            'catid' => 'int',
+            'page' => 'int',
+            'pageSize' => 'int'
+        ];
+        $this->validate($request, $rules);
+
+        $catid = (int)$request->catid ?: 0;
+        $page = (int)$request->page ?: 1;
+        $pageSize = (int)$request->pageSize ?: 10;
+
+        $channel = Channel::select(['catid', 'catname'])->where([
+            'parentid' => 0,
+            'if_view' => 2,
+        ])->orderBy('catorder')->get();
+
+        $channel->prepend([
+            'catid' => 0,
+            'catname' => '最新'
+        ]);
 
         $query = News::select([
             'id',
@@ -61,18 +65,48 @@ class NewsController extends Controller
             $query,
             ['page_size'=>$pageSize, 'page_number'=>$page], '*',
             function($item){
+                $item['imgpath'] = env('APP_URL').$item['imgpath'];
                 $item['begintime'] = date('m-d', $item['begintime']);
                 return $item;
             }
         );
 
-        return $this->success($result);
+        return $this->success([
+            'channel' => $channel,
+            'response' => $result,
+        ]);
     }
 
+    /**
+     * 获取新闻详情
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getDetail(Request $request){
-        $id = $request->nid;
-        $result = News::where('id', $id)->first();
+        $rules = [
+            'nid' => 'required|int'
+        ];
+        $this->validate($request, $rules);
+        $nid = (int)$request->nid;
 
-        return $this->success($result);
+        $result = News::where('id', $nid)->first();
+
+        if($result){
+            $result['begintime'] = date('Y-m-d H:i:s', $result['begintime']);
+            $result['imgpath'] = env('APP_URL').$result['imgpath'];
+            News::where('id', $nid)->increment('hit');
+            $channel = Channel::select(['catid', 'catname'])->where('catid', $result['catid'])->first();
+            $breadcrumbs= [
+                ['catid'=>0, 'catname' => '新闻资讯'],
+                $channel
+            ];
+            return $this->success([
+                'breadcrumbs' => $breadcrumbs,
+                'info' => $result
+            ]);
+        }
+
+        return $this->fail('300', [], '该新闻不存在！');
     }
 }

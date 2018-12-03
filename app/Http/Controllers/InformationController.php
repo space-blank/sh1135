@@ -3,9 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Logic\PaginateLogic;
-use App\Http\Models\Channel;
 use App\Http\Models\Information;
-use App\Http\Models\News;
 use Illuminate\Http\Request;
 
 class InformationController extends Controller
@@ -21,19 +19,6 @@ class InformationController extends Controller
     public function __construct(PaginateLogic $paginateLogic){
         $this->paginateLogic = $paginateLogic;
     }
-    /**
-     * 获取网站新闻频道
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function getChannel(Request $request){
-        $channel = Channel::select(['catid', 'catname'])->where([
-            'parentid' => 0,
-            'if_view' => 2,
-        ])->orderBy('catorder')->get();
-        return $this->success($channel);
-    }
 
     /**
      * 获取信息列表
@@ -43,11 +28,10 @@ class InformationController extends Controller
      */
     public function getInformation(Request $request){
         $rules = [
-            'keyword'   => 'required|string|max:50'
+            'keyword' => 'string|max:50'
         ];
         $this->validate($request, $rules);
 
-        $catid = $request->catid ?: 0;
         $keyword = $request->keyword ?: '';
         $page = (int)$request->page ?: 1;
         $pageSize = (int)$request->pageSize ?: 10;
@@ -64,10 +48,6 @@ class InformationController extends Controller
             'hit',
             'begintime'
         ];
-
-        if($catid){
-            $query = $query->where('catid', $catid);
-        }
 
         if($keyword){
             $query->where(function ($query) use ($keyword) {

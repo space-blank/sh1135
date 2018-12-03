@@ -17,12 +17,10 @@ class CategoryController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function index(Request $request){
-        $input = $request->all();
-        $cityid = (int)$request->get('cityid', 1);
-
         $cat_list = Category::from('category as a')->select([
             'a.catid',
             'a.catname',
+            'a.icon',
             'b.catid AS childid',
             'b.catname AS childname'
         ])->leftjoin('category as b', 'b.parentid', '=', 'a.catid')
@@ -38,6 +36,7 @@ class CategoryController extends Controller
         foreach ($cat_list as $row){
             $cat_arr[$row['catid']]['catid']    = $row['catid'];
             $cat_arr[$row['catid']]['catname']  = $row['catname'];
+            $cat_arr[$row['catid']]['icon']  = env('APP_URL').$row['icon'];
 
             if ($row['childid']) {
                 $cat_arr[$row['catid']]['children'][] = [
@@ -47,15 +46,7 @@ class CategoryController extends Controller
             }
         }
 
-        $location = City::select(['cityname'])->where('cityid', $cityid)->value('cityname');
-
-        return $this->success([
-            'location' => [
-                'cityid' => $cityid,
-                'cityname' => $location
-            ],
-            'list' => array_values($cat_arr)
-        ]);
+        return $this->success(array_values($cat_arr));
     }
 
 

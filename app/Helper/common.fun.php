@@ -3286,7 +3286,7 @@ function get_ip2city($ip){
 }
 
 function get_latlng2cityid($lat='',$lng=''){
-	global $db,$db_mymps,$charset;
+	$charset = 'gbk';
 	if($lat && $lng){
 		$array = json_decode(file_get_contents("http://api.map.baidu.com/geocoder?output=json&location=$lat,$lng"),true);
 		$city = $charset == 'gbk' ? iconv('UTF-8','GBK',$array['result']['addressComponent']['city']) : $array['result']['addressComponent']['city'];
@@ -3299,6 +3299,7 @@ function get_latlng2cityid($lat='',$lng=''){
 			}
 		}
 	}
+	return 0;
 }
 
 /*获得浏览器版本信息*/
