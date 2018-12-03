@@ -58,49 +58,5 @@ class CategoryController extends Controller
         ]);
     }
 
-    public function getCity(Request $request){
-        $cityid = (int)$request->get('cityid', 1);
-        $location = City::select(['cityname'])->where('cityid', $cityid)->value('cityname');
 
-        return $this->success([
-            'location' => [
-                'cityid' => $cityid,
-                'cityname' => $location
-            ],
-            'list' => array_values([])
-        ]);
-    }
-
-    /**
-     * 获取二级地域
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function getArea(Request $request){
-        $cityid = (int)$request->get('cityid', 1);
-        $location = City::select(['cityname'])->where('cityid', $cityid)->value('cityname');
-        $area = Area::select(['areaid', 'areaname'])->where('cityid', $cityid)->get();
-
-        return $this->success([
-            'location' => [
-                'cityid' => $cityid,
-                'cityname' => $location
-            ],
-            'list' => $area
-        ]);
-    }
-
-    /**
-     * 获取三级地域
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function getStreet(Request $request){
-        $areaid  = (int)$request->get('areaid', 1);
-        $location = Street::select(['streetid', 'streetname'])->where('areaid', $areaid)->get();
-
-        return $this->success($location);
-    }
 }

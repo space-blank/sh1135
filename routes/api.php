@@ -19,28 +19,29 @@ Route::group(['prefix' => 'v1'], function () {
         return $request->user();
     });
 
-    Route::group(['prefix' => 'category', /*'middleware' => 'assign.city'*/], function () {
-        Route::get('index', 'CategoryController@index');
+    Route::group(['prefix' => 'category'], function () {
+        Route::get('list', 'CategoryController@index');
     });
 
-    Route::group(['prefix' => 'news', /*'middleware' => 'assign.city'*/], function () {
+    Route::group(['prefix' => 'news'], function () {
         Route::get('channel', 'NewsController@getChannel');
         Route::get('list', 'NewsController@getNews');
         Route::get('detail', 'NewsController@getDetail');
     });
 
-    Route::group(['prefix' => 'corp', /*'middleware' => 'assign.city'*/], function () {
+    Route::group(['prefix' => 'corp'], function () {
         Route::get('index', 'CorpController@getCorp');
     });
     //搜索的内容列表
-    Route::group(['prefix' => 'information', /*'middleware' => 'assign.city'*/], function () {
+    Route::group(['prefix' => 'information'], function () {
         Route::get('list', 'InformationController@getInformation');
         Route::get('detail', 'InformationController@getDetail');
     });
 
-    Route::group(['prefix' => 'location', /*'middleware' => 'assign.city'*/], function () {
-        Route::get('area', 'CategoryController@getArea');
-        Route::get('street', 'CategoryController@getStreet');
+    Route::group(['prefix' => 'location'], function () {
+        Route::get('/', 'IndexController@getCity');
+        Route::get('area', 'IndexController@getArea');
+        Route::get('street', 'IndexController@getStreet');
     });
 
 
