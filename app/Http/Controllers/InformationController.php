@@ -42,10 +42,15 @@ class InformationController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function getInformation(Request $request){
+        $rules = [
+            'keyword'   => 'required|string|max:50'
+        ];
+        $this->validate($request, $rules);
+
         $catid = $request->catid ?: 0;
         $keyword = $request->keyword ?: '';
-        $page = $request->page ?: 1;
-        $pageSize = $request->pageSize ?: 10;
+        $page = (int)$request->page ?: 1;
+        $pageSize = (int)$request->pageSize ?: 10;
 
         $query = Information::query()->where('info_level', '>', 0)->orderByDesc('id');
         $columns = [
