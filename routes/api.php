@@ -21,6 +21,7 @@ Route::group(['prefix' => 'v1'], function () {
 
     Route::group(['prefix' => 'category'], function () {
         Route::get('list', 'CategoryController@index');
+        Route::get('condition', 'CategoryController@searConfig');
     });
 
     Route::group(['prefix' => 'news'], function () {
