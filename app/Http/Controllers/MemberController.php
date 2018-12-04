@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Logic\PaginateLogic;
 use App\Http\Models\Channel;
 use App\Http\Models\Corp;
+use App\Http\Models\Favor;
+use App\Http\Models\Member;
 use App\Http\Models\News;
+use App\User;
 use Illuminate\Http\Request;
 
 class MemberController extends Controller
@@ -55,9 +58,40 @@ class MemberController extends Controller
         return $this->success(array_values($cat_arr));
     }
 
-    public function getDetail(Request $request){
-        $id = $request->nid;
-        $result = News::where('id', $id)->first();
+    /**
+     * 我的收藏
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getFavor(Request $request){
+        $rules = [
+            'uid' => 'required|string',
+            'page' => 'int',
+            'pageSize' => 'int'
+        ];
+        $this->validate($request, $rules);
+
+        $uid = $request->uid;
+        $page = (int)$request->page ?: 1;
+        $pageSize = (int)$request->pageSize ?: 10;
+
+        $userid = Member::select(['userid'])->where('id', $uid)->value('userid');
+        if(!$userid){
+            return $this->fail(30001);
+        }
+
+        $result = Favor::from('shoucang as a')->select(['a.id as fid', 'a.infoid', 'c.catname', 'a.title', 'intime'])
+            ->leftjoin('information as b', 'a.infoid', '=', 'b.id')
+            ->leftjoin('category  as c', 'b.catid', '=', 'c.catid')
+            ->where('a.userid', $userid)
+            ->skip(($page-1)*$pageSize)->take($pageSize)
+            ->orderByDesc('a.id')->get();
+
+        $result->map(function($item){
+                $item['intime'] = date('Y-m-d H:i:s', $item['intime']);
+                return $item;
+            });
 
         return $this->success($result);
     }

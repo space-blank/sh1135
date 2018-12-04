@@ -57,4 +57,10 @@ Route::group(['prefix' => 'v1'], function () {
         $router->get('profile','UserController@profile');
     });
 
+    Route::group(['prefix' => 'member'], function () {
+        Route::get('/', 'IndexController@getCity');
+        Route::get('favor', 'MemberController@getFavor');
+        Route::get('area', 'IndexController@getArea');
+        Route::get('street', 'IndexController@getStreet');
+    });
 });

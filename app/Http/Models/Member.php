@@ -3,14 +3,14 @@
 namespace App\Http\Models;
 
 
-class Information extends BaseModel
+class Member extends BaseModel
 {
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'information';
+    protected $table = 'member';
 
     /**
      * The primary key for the model.
@@ -22,11 +22,10 @@ class Information extends BaseModel
     public $timestamps = false;
 
     /**
-     * 获取对应的分类
+     * 获取用户的收藏
      */
-    public function category()
+    public function favor()
     {
-        return $this->belongsTo(Information::class, 'catid', 'catid ')->select();
+        return $this->hasMany(Favor::class, 'userid', 'userid')->select('id as fid', 'title', 'intime');
     }
-
 }
