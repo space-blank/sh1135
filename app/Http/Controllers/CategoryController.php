@@ -82,11 +82,20 @@ class CategoryController extends Controller
                 'catname'
             ])->where('parentid', $cat['catid'])->get();
             if($parentId != 0){
-                $subCat = Category::select([
+                $pCat = Category::select([
                     'catid',
-                    'catname'
+                    'catname',
+                    'parentid'
                 ])->where('catid', $parentId)->first();
-                $breadCrumbs[] = $subCat;
+                array_unshift($breadCrumbs, $pCat);
+                $parentId = $pCat['parentid'];
+                if($parentId != 0){
+                    $pCat = Category::select([
+                        'catid',
+                        'catname'
+                    ])->where('catid', $parentId)->first();
+                    array_unshift($breadCrumbs, $pCat);
+                }
             }
             $modid = $cat['modid'];
             $typemodels = InfoTypemodels::select(['id', 'options'])->where('id', $modid)->first();
