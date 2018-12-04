@@ -59,9 +59,18 @@ class AuthController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function weChatLogin(Request $request){
-        $code = request()->input('code');
-        $iv = request()->input('iv');
-        $encryptData = request()->input('data');
+        $rules = [
+            'code' => 'required',
+            'iv'   => 'required',
+            'encrypt_data' => 'required'
+        ];
+        $this->validate($request, $rules);
+
+        $code = $request->code;
+        $iv = $request->iv;
+        $encryptData = $request->encrypt_data;
+
+
         $appId = env('WE_CHAT_APP_ID');
         $secret = env('WE_CHAT_SECRET');
         $url = $this->weChatLoginUrl.'?appid='.$appId.'&secret='.$secret.'&js_code='.$code.'&grant_type=authorization_code';
@@ -81,12 +90,14 @@ class AuthController extends Controller
 
         $info = json_decode($data,true);
         //TODO 插入用户数据
-        $user = User::firstOrCreate([], []);
-        $return['user'] = $user;
+//        $user = User::firstOrCreate([], []);
+//        $return['user'] = $user;
 
-        if($user->wasRecentlyCreated){
-            $return['access_token'] = auth()->login($user);;
+//        if($user->wasRecentlyCreated){
+        if(1){
+            $return['access_token'] = auth()->login($errCode);;
             $return['token_type'] = 'bearer';
+            $return['user'] = $errCode;
 //            $return['expires_in'] = auth()->factory()->getTTL() * 60;
         }
         return $this->success($return);

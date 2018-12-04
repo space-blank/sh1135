@@ -48,6 +48,7 @@ Route::group(['prefix' => 'v1'], function () {
 
     Route::prefix('auth')->group(function($router) {
         $router->post('login', 'AuthController@login');
+        $router->post('wxlogin', 'AuthController@weChatLogin');
         $router->post('logout', 'AuthController@logout');
 
     });
