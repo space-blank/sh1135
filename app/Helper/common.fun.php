@@ -3550,3 +3550,94 @@ function _Array_Combine($_Arr1, $_Arr2)
     for($i=0; $i<count($_Arr1); $i++) $_Res[$_Arr1[$i]] = $_Arr2[$i];
     return $_Res;
 }
+
+function get_info_var_type($type,$name="",$rules="",$value="",$forward='back',$title='',$require=''){
+    $mymps = '';
+    $required = $require == 1 ? "require=\"true\" datatype=\"limit\" msg=\"".$title."不能为空\"" : "";
+    if($forward == 'back'){
+        switch($type){
+            case 'text':
+                $mymps_rule_str = $rules[maxlength]?$rules[maxlength]."字符以内":"";
+                $mymps .= "<input name=\"extra[".$name."]\" value=\"".$value."\" type=\"text\" size=\"26\" ".$required."> ".$mymps_rule_str;
+                break;
+            case 'textarea':
+                $mymps_rule_str = $rules[maxlength]?"<br />不得超过".$rules[maxlength]."个字符":"";
+                $mymps = "<textarea name=\"extra[".$name."]\"  ".$required.">".$value."</textarea> ".$mymps_rule_str;
+                break;
+            case 'radio':
+                $mymps = $rules;
+                break;
+            case 'checkbox':
+                $count = $require == 1 ? count($rules) : "";
+                $new_value = explode(",",$value);
+                $required = "min=1 max=$count require=\"true\" datatype=\"limit|group\" msgid = $title  msg=\"必须要选择一个".$title."\"";
+                $mymps = "<div class=\"checkboxinner style=float:left;\">";
+                foreach($rules as $k => $v){
+                    $mymps .= "<label for=\"".$name.$k."\" style=\"margin:0 10px 0 0;\"><input $required id=\"".$name.$k."\" name=\"extra[".$name."][]\" type=\"checkbox\" class=\"checkbox\" value=\"".$k."\"";
+                    $mymps .= in_array($k,$new_value)?"checked":"";
+                    $mymps .=">".$v."</label>";
+                }
+                $mymps .= "</div>";
+                $endrules = $required = NULL;
+                break;
+            case 'select':
+                $mymps .="<div class=\"select\">";
+                //$mymps .="<label class=\"psu\">请选择</label>";
+                $mymps .= "<select name=\"extra[".$name."]\" class=\"decorate\" ".$required.">";
+                $mymps .= "<option value=\"\">请选择".$title."</option>";
+                foreach($rules as $k => $v){
+                    $mymps .= "<option value=\"".$k."\"";
+                    $mymps .= ($k == $value)?"selected ":"";
+                    $mymps .=">".$v."</option> ";
+                }
+                $mymps .= "</select>";
+                $mymps .="</div>";
+                break;
+            case 'number':
+                $mymps = $rules['units'];
+                break;
+        }
+    } else {
+        switch($type){
+            case 'text':
+                $mymps_rule_str = $rules[maxlength]?$rules[maxlength]."字符以内":"";
+                $mymps .= "<input name=\"".$name."\" value=\"".$value."\" type=\"text\" size=\"26\"> ".$mymps_rule_str;
+                break;
+            case 'textarea':
+                $mymps_rule_str = $rules[maxlength]?"<br />不得超过".$rules[maxlength]."个字符":"";
+                $mymps = "<textarea name=\"".$name."\"  cols=\"100\" rows=\"10\" class=\"input\">".$value."</textarea> ".$mymps_rule_str;
+                break;
+            case 'radio':
+                foreach($rules as $k => $v){
+                    $mymps .= "<label for=\"".$name.$k."\"><input id=\"".$name.$k."\" name=\"extra[".$name."]\" type=\"radio\" class=\"radio\" value=\"".$k."\"";
+                    $mymps .= ($k == $value)?"checked":"";
+                    $mymps .= ">".$v."</label> ";
+                }
+                $endrules = NULL;
+                break;
+            case 'checkbox':
+                $new_value = explode(",",$value);
+                foreach($rules as $k => $v){
+                    $mymps .= "<label for=\"".$name.$k."\" style=\"margin:0 10px 0 0;\"><input id=\"".$name.$k."\" name=\"".$name."\" type=\"checkbox\"  class=\"checkbox\" value=\"".$k."\"";
+                    $mymps .= in_array($k,$new_value)?"checked":"";
+                    $mymps .=">".$v."</label>";
+                }
+                break;
+            case 'select':
+                $mymps .= "<select name=\"".$name."\" class=\"decorate\" >";
+                $mymps .= "<option value=\"\">请选择".$title."</option>";
+                foreach($rules as $k => $v){
+                    $mymps .= "<option value=\"".$k."\"";
+                    $mymps .= ($k == $value)?"selected ":"";
+                    $mymps .=">".$v."</option> ";
+                }
+                $mymps .= "</select>";
+                break;
+            case 'number':
+                $mymps .= "<input name=\"".$name."[min]\" type=\"text\"> 至 <input  name=\"".$name."[max]\" type=\"text\" float:none;\"> ";
+                break;
+        }
+    }
+    return $mymps;
+}
+

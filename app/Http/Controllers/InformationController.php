@@ -28,11 +28,15 @@ class InformationController extends Controller
      */
     public function getInformation(Request $request){
         $rules = [
-            'keyword' => 'string|max:50'
+            'keyword' => 'string|max:50',
+            'tel' => 'regex:/^\d{1,20}$/',
+            'page' => 'int',
+            'pageSize' => 'int'
         ];
         $this->validate($request, $rules);
 
         $keyword = $request->keyword ?: '';
+        $tel = $request->tel ?: '';
         $page = (int)$request->page ?: 1;
         $pageSize = (int)$request->pageSize ?: 10;
 
@@ -42,7 +46,6 @@ class InformationController extends Controller
             'title',
             'img_path',
             'content',
-            'userid',
             'userid',
             'contact_who',
             'hit',
@@ -54,6 +57,10 @@ class InformationController extends Controller
                 $query->Where('title', 'like', '%'.$keyword.'%');
                 $query->orWhere('content', 'like', '%'.$keyword.'%');
             });
+        }
+
+        if($tel){
+            $query->Where('tel', 'like', '%'.$tel.'%');
         }
 
         $result = $this->paginateLogic->paginate(

@@ -58,9 +58,9 @@ Route::group(['prefix' => 'v1'], function () {
     });
 
     Route::group(['prefix' => 'member'], function () {
-        Route::get('/', 'IndexController@getCity');
+        Route::get('post', 'MemberController@postStore');
         Route::get('favor', 'MemberController@getFavor');
-        Route::get('area', 'IndexController@getArea');
+        Route::get('publish', 'MemberController@myPublish');
         Route::get('street', 'IndexController@getStreet');
     });
 });

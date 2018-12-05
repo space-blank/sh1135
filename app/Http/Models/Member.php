@@ -21,6 +21,35 @@ class Member extends BaseModel
 
     public $timestamps = false;
 
+    public $fillable = [
+        'title',
+        'content',
+        'begintime',
+        'activetime',
+        'endtime',
+        'catid',
+        'catname',
+        'dir_typename',
+        'cityid',
+        'areaid',
+        'streetid',
+        'userid',
+        'ismember',
+        'info_level',
+        'qq',
+        'email',
+        'tel',
+        'contact_who',
+        'img_count',
+        'certify',
+        'ip',
+        'ip2area',
+        'latitude',
+        'longitude',
+        'zhuangrang',
+        'danwei'
+    ];
+
     /**
      * 获取用户的收藏
      */

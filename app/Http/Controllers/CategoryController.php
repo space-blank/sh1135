@@ -99,7 +99,6 @@ class CategoryController extends Controller
             }
             $modid = $cat['modid'];
             $typemodels = InfoTypemodels::select(['id', 'options'])->where('id', $modid)->first();
-//            SELECT optionid,title,identifier,type,rules,search FROM `{$GLOBALS['db_mymps']}info_typeoptions` WHERE optionid='$u'"
             if($typemodels){
                 $typeOptions = InfoTypeoptions::select([
                     'optionid',
