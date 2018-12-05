@@ -18,5 +18,7 @@ return [
             'title' => '商家店铺',
             'url' => '',
         ],
-    ]
+    ],
+    'SiteName' => '门铺网',
+    'cfg_info_if_gq' => 0,
 ];

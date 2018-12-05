@@ -111,7 +111,7 @@ function filter_str($msg){
 	return $msg;
 }
 
-/*»ñµÃ¿Õ¼äÎÄµµ*/
+/*è·å¾—ç©ºé—´æ–‡æ¡£*/
 function get_member_docu($num=10,$userid='',$if_check=1,$typeid=0){
 	global $db,$db_mymps;
 	$where = "WHERE 1";
@@ -138,7 +138,7 @@ function get_member_docu($num=10,$userid='',$if_check=1,$typeid=0){
 	return $docu;
 }
 
-//ÉèÖÃCOOKIE
+//è®¾ç½®COOKIE
 function msetcookie($var,$val,$life=0){
 	global $cookiepre,$cookiedomain,$cookiepath,$timestamp;
 	$cookie_pre  = $cookiepre.'_';
@@ -148,7 +148,7 @@ function msetcookie($var,$val,$life=0){
 	setcookie($cookie_pre.$var,$val,$life,$cookie_path,$cookiedomain);
 }
 
-//·µ»ØCOOKIE
+//è¿”å›COOKIE
 function mgetcookie($var){
 	global $cookiepre;
 	$cookie_pre  = $cookiepre.'_';
@@ -262,7 +262,7 @@ function die_msg($msg)
 	return '<p style="font-family: Verdana, Tahoma; font-size: 11px;"><b>Mymps info:</b>'.$msg.'</p>';
 }
 
-/* µ÷ÓÃUCenterº¯Êı */
+/* è°ƒç”¨UCenterå‡½æ•° */
 function uc_call($func, $params=NULL)
 {
     restore_error_handler();
@@ -287,7 +287,7 @@ function get_editor($editor_name,$type,$value = '',$width='100%',$height='400px'
 				editor = K.create('textarea[name=\"".$editor_name."\"]', {
 						resizeType : 1,
 						filterMode : true,
-						uploadJson : '".$BasePath."/upload_user.php' // Ïà¶ÔÓÚµ±Ç°Ò³ÃæµÄÂ·¾¶
+						uploadJson : '".$BasePath."/upload_user.php' // ç›¸å¯¹äºå½“å‰é¡µé¢çš„è·¯å¾„
 				});
 				
 			});</script>";
@@ -313,7 +313,7 @@ function get_editor($editor_name,$type,$value = '',$width='100%',$height='400px'
 				editor = K.create('textarea[name=\"".$editor_name."\"]', {
 						resizeType : 1,
 						filterMode : true,
-						uploadJson : '".$BasePath."/upload_admin.php' // Ïà¶ÔÓÚµ±Ç°Ò³ÃæµÄÂ·¾¶
+						uploadJson : '".$BasePath."/upload_admin.php' // ç›¸å¯¹äºå½“å‰é¡µé¢çš„è·¯å¾„
 				});
 				
 			});</script>";
@@ -321,7 +321,7 @@ function get_editor($editor_name,$type,$value = '',$width='100%',$height='400px'
 		
 	}
 
-	$html .= '<textarea require="true" datatype="limit" msg="ÇëÌîĞ´ĞÅÏ¢ÄÚÈİÃèÊö" msgid="content" name="'.$editor_name.'" style="width:'.$width.';height:'.$height.';visibility:hidden;">'.$value.'</textarea>';  
+	$html .= '<textarea require="true" datatype="limit" msg="è¯·å¡«å†™ä¿¡æ¯å†…å®¹æè¿°" msgid="content" name="'.$editor_name.'" style="width:'.$width.';height:'.$height.';visibility:hidden;">'.$value.'</textarea>';  
 	
 	return $html;  
 }
@@ -329,7 +329,7 @@ function get_ueditor($editor_name,$BasePath='../include/ueditor')
 {
 	$html = '';  
 	$html .= '<script src="'.$BasePath.'/ueditor.config.js"></script><script  src="'.$BasePath.'/ueditor.all.js"></script>'; 
-	$html .='<textarea name="'.$editor_name.'" id="myEditor" require="true" datatype="limit" msg="ÇëÌîĞ´ĞÅÏ¢ÄÚÈİÃèÊö" msgid="content">'.$value.'</textarea> ';  
+	$html .='<textarea name="'.$editor_name.'" id="myEditor" require="true" datatype="limit" msg="è¯·å¡«å†™ä¿¡æ¯å†…å®¹æè¿°" msgid="content">'.$value.'</textarea> ';  
 	$html .='<script type="text/javascript">   var editor = new UE.ui.Editor();  editor.render("myEditor"); </script> ';  
 
 	
@@ -348,14 +348,14 @@ function mymps_chk_randcode($getcode='')
 	}
 }
 
-function CheckUserID($uid,$msgtitle='ÓÃ»§Ãû')
+function CheckUserID($uid,$msgtitle='ç”¨æˆ·å')
 {
 	for($i=0;isset($uid[$i]);$i++){
 		if(ord($ck_uid[$i]) > 0x80){
 			if(isset($uid[$i+1]) && ord($uid[$i+1])>0x40){
 				$i++;
 			}else{
-				return $msgtitle.'¿ÉÄÜº¬ÓĞÂÒÂë£¬½¨ÒéÄã¸ÄÓÃÓ¢ÎÄ×ÖÄ¸ºÍÊı×Ö×éºÏ£¡';
+				return $msgtitle.'å¯èƒ½å«æœ‰ä¹±ç ï¼Œå»ºè®®ä½ æ”¹ç”¨è‹±æ–‡å­—æ¯å’Œæ•°å­—ç»„åˆï¼';
 			}
 		}
 	}
@@ -406,12 +406,12 @@ function write_msg($msg="",$url="javascript:history.go(-1);",$action="")
 		if (!empty($msg)&&!empty($url)){
 			if($url=="javascript:history.go(-1);"){
 				$time_echo = "setTimeout('JumpUrl()',20000);";
-				$goto = "<a href='".$url."'>Èç¹ûÄãµÄä¯ÀÀÆ÷Ã»·´Ó¦£¬Çëµã»÷ÕâÀï...</a>";
+				$goto = "<a href='".$url."'>å¦‚æœä½ çš„æµè§ˆå™¨æ²¡ååº”ï¼Œè¯·ç‚¹å‡»è¿™é‡Œ...</a>";
 			}elseif($url == "olmsg"){
 				$time_echo = $goto = "";
 			}else{
 				$time_echo = "setTimeout('JumpUrl()',1500);";
-				$goto = "<a href='".$url."'>Èç¹ûÄãµÄä¯ÀÀÆ÷Ã»·´Ó¦£¬Çëµã»÷ÕâÀï...</a>";
+				$goto = "<a href='".$url."'>å¦‚æœä½ çš„æµè§ˆå™¨æ²¡ååº”ï¼Œè¯·ç‚¹å‡»è¿™é‡Œ...</a>";
 			}
 			include MYMPS_ROOT."/template/global/mymps_message.html";
 		}elseif(empty($msg)&&!empty($url)){
@@ -435,7 +435,7 @@ function show_msg($msgs,$ms="")
 	}elseif(!empty($ms)&&$ms!='record'){
 		write_admin_record($ms);
 	}
-	$title = $mymps_global[SiteName].'ÌáÊ¾ĞÅÏ¢!';
+	$title = $mymps_global[SiteName].'æç¤ºä¿¡æ¯!';
 	include(MYMPS_ROOT."/template/global/mymps_msg.html");
 	while (list($k,$v)=each($msgs)){$str .=	"<br>".$v."<br>";};
 	echo $str."</div></div></div></center></body></html>";
@@ -450,7 +450,7 @@ function is_member_info($id,$type='public')
 {
 	global $db,$db_mymps;
 	if(empty($id)){
-		write_msg("²Ù×÷Ê§°Ü£¡ÄúÃ»ÓĞÑ¡Ôñ¶ÔÏó£¡");
+		write_msg("æ“ä½œå¤±è´¥ï¼æ‚¨æ²¡æœ‰é€‰æ‹©å¯¹è±¡ï¼");
 	}
 	$type = ($type == 'public')?'AND a.info_level != 0':'';
 	$post = $db->getRow("SELECT a.*,b.modid FROM `{$db_mymps}information` AS a LEFT JOIN `{$db_mymps}category` AS b ON a.catid = b.catid WHERE a.id = '$id' $type");
@@ -527,48 +527,48 @@ function page2($rewrite='active',$ext='.html')
 	}
 	$begin = ($begin < 0)?1:$begin;
 	if($rewrite == 'active'){
-		$nav .="<span class=anum>¹²".$rows_num."¼ÇÂ¼</span> ";
-		if($page>1)$nav .= "<a href='?$param"."page=".($page-1)."' title='µÚ".($page-1)."Ò³'><ÉÏÒ»Ò³</a>";
-		if($begin!=1)$nav .= "<a href='?$param' title='µÚ1Ò³'>1 ...</a>";
+		$nav .="<span class=anum>å…±".$rows_num."è®°å½•</span> ";
+		if($page>1)$nav .= "<a href='?$param"."page=".($page-1)."' title='ç¬¬".($page-1)."é¡µ'><ä¸Šä¸€é¡µ</a>";
+		if($begin!=1)$nav .= "<a href='?$param' title='ç¬¬1é¡µ'>1 ...</a>";
 		$end = ($begin+$per_screen>$pages_num)?$pages_num+1:$begin+$per_screen;
 		for($i=$begin; $i<$end; $i++) {
 			if (!empty($i)){
-				$nav .=($page!=$i)?"<a href='?$param"."page=$i' title='µÚ{$i}Ò³'>$i</a> ":" <span class=current>$i</span> ";
+				$nav .=($page!=$i)?"<a href='?$param"."page=$i' title='ç¬¬{$i}é¡µ'>$i</a> ":" <span class=current>$i</span> ";
 			}
 		}
-		if($end!=$pages_num+1) $nav .= "<a href='?$param"."page=$pages_num' title='µÚ{$pages_num}Ò³'>... {$pages_num}</a>";
-		if($page<$pages_num)   $nav .= "<a href='?$param"."page=".($page+1)."' title='µÚ".($page+1)."Ò³'>ÏÂÒ»Ò³></a>";
+		if($end!=$pages_num+1) $nav .= "<a href='?$param"."page=$pages_num' title='ç¬¬{$pages_num}é¡µ'>... {$pages_num}</a>";
+		if($page<$pages_num)   $nav .= "<a href='?$param"."page=".($page+1)."' title='ç¬¬".($page+1)."é¡µ'>ä¸‹ä¸€é¡µ></a>";
 	} elseif($rewrite == 'rewrite') {
-		$nav .="<span class=anum>¹²".$rows_num."¼ÇÂ¼</span> ";
-		if($page>1)$nav .= "<a href='$param"."page-".($page-1).".html' title='µÚ".($page-1)."Ò³'><ÉÏÒ»Ò³</a>";
-		if($begin!=1)$nav .= "<a href='$param"."page-1.html' title='µÚ1Ò³'>1 ...</a>";
+		$nav .="<span class=anum>å…±".$rows_num."è®°å½•</span> ";
+		if($page>1)$nav .= "<a href='$param"."page-".($page-1).".html' title='ç¬¬".($page-1)."é¡µ'><ä¸Šä¸€é¡µ</a>";
+		if($begin!=1)$nav .= "<a href='$param"."page-1.html' title='ç¬¬1é¡µ'>1 ...</a>";
 		$end = ($begin+$per_screen>$pages_num)?$pages_num+1:$begin+$per_screen;
 		for($i=$begin; $i<$end; $i++) {
 			if (!empty($i)){
-				$nav .=($page!=$i)?"<a href='$param"."page-$i.html' title='µÚ{$i}Ò³'>$i</a> ":" <span class=current>$i</span> ";
+				$nav .=($page!=$i)?"<a href='$param"."page-$i.html' title='ç¬¬{$i}é¡µ'>$i</a> ":" <span class=current>$i</span> ";
 			}
 		}
-		if($end!=$pages_num+1) $nav .= "<a href='$param"."page-$pages_num.html' title='µÚ{$pages_num}Ò³'>... {$pages_num}</a>";
-		if($page<$pages_num)   $nav .= "<a href='$param"."page-".($page+1).".html' title='µÚ".($page+1)."Ò³'>ÏÂÒ»Ò³></a>";
+		if($end!=$pages_num+1) $nav .= "<a href='$param"."page-$pages_num.html' title='ç¬¬{$pages_num}é¡µ'>... {$pages_num}</a>";
+		if($page<$pages_num)   $nav .= "<a href='$param"."page-".($page+1).".html' title='ç¬¬".($page+1)."é¡µ'>ä¸‹ä¸€é¡µ></a>";
 	}elseif($rewrite == 'rewrite_py') {
 		$param = $city['domain'].$dir_typename.'-'.$param;
-		$nav .="<span class=anum>¹²".$rows_num."¼ÇÂ¼</span> ";
-		if($page>1)$nav .= "<a href='$param"."page-".($page-1)."/' title='µÚ".($page-1)."Ò³'><ÉÏÒ»Ò³</a>";
-		if($begin!=1)$nav .= "<a href='$param"."page-1/' title='µÚ1Ò³'>1 ...</a>";
+		$nav .="<span class=anum>å…±".$rows_num."è®°å½•</span> ";
+		if($page>1)$nav .= "<a href='$param"."page-".($page-1)."/' title='ç¬¬".($page-1)."é¡µ'><ä¸Šä¸€é¡µ</a>";
+		if($begin!=1)$nav .= "<a href='$param"."page-1/' title='ç¬¬1é¡µ'>1 ...</a>";
 		$end = ($begin+$per_screen>$pages_num)?$pages_num+1:$begin+$per_screen;
 		for($i=$begin; $i<$end; $i++) {
 			if (!empty($i)){
-				$nav .=($page!=$i)?"<a href='$param"."page-$i/' title='µÚ{$i}Ò³'>$i</a> ":" <span class=current>$i</span> ";
+				$nav .=($page!=$i)?"<a href='$param"."page-$i/' title='ç¬¬{$i}é¡µ'>$i</a> ":" <span class=current>$i</span> ";
 			}
 		}
-		if($end!=$pages_num+1) $nav .= "<a href='$param"."page-$pages_num/' title='µÚ{$pages_num}Ò³'>... {$pages_num}</a>";
-		if($page<$pages_num)   $nav .= "<a href='$param"."page-".($page+1)."/' title='µÚ".($page+1)."Ò³'>ÏÂÒ»Ò³></a>";
+		if($end!=$pages_num+1) $nav .= "<a href='$param"."page-$pages_num/' title='ç¬¬{$pages_num}é¡µ'>... {$pages_num}</a>";
+		if($page<$pages_num)   $nav .= "<a href='$param"."page-".($page+1)."/' title='ç¬¬".($page+1)."é¡µ'>ä¸‹ä¸€é¡µ></a>";
 	}
 	return $nav; 
 }
 
 /*************/
-/*»ñÈ¡¹ã¸æ»º´æ*/
+/*è·å–å¹¿å‘Šç¼“å­˜*/
 /*$page = array('index','category','info')*/
 /*************/
 function get_advertisement($page = 'index'){
@@ -598,7 +598,7 @@ function globalassign(){
 	if(CURSCRIPT == 'store'){
 		$docunav = get_member_docunav();
 	} else {
-		/*Õ¾ÎñÁ´½Ó*/
+		/*ç«™åŠ¡é“¾æ¥*/
 		$about = array();
 		$about['aboutus_uri'] = Rewrite('about',array('part'=>'aboutus'));
 		$about['news_uri'] = Rewrite('news',array('part'=>'index'));
@@ -676,7 +676,7 @@ function mymps_tpl($str,$curscript='')
 
 function unknown_err_msg()
 {
-	$msgs="Î´Öª´íÎó£¬¿ÉÄÜÓëÄãÌá½»µÄ²ÎÊıÓĞ¹Ø<br /><br />»ñÈ¡¸ü¶à°ïÖúÇëÇ°Íù<a href=http://www.mymps.com.cn target=_blank>Mymps¹Ù·½ÍøÕ¾</a>";
+	$msgs="æœªçŸ¥é”™è¯¯ï¼Œå¯èƒ½ä¸ä½ æäº¤çš„å‚æ•°æœ‰å…³<br /><br />è·å–æ›´å¤šå¸®åŠ©è¯·å‰å¾€<a href=http://www.mymps.com.cn target=_blank>Mympså®˜æ–¹ç½‘ç«™</a>";
 	write_msg($msgs,'olmsg');
 }
 /*text str html*/
@@ -704,7 +704,7 @@ function Spcnw_mid($str,$start,$slen){
 }
 //text to html
 function Text2Html($txt){
-	$txt = str_replace("  ","¡¡",$txt);
+	$txt = str_replace("  ","ã€€",$txt);
 	$txt = str_replace("<","&lt;",$txt);
 	$txt = str_replace(">","&gt;",$txt);
 	$txt = preg_replace("/[\r\n]{1,}/isU","<br/>\r\n",$txt);
@@ -722,7 +722,7 @@ function SpHtml2Text($str){
 	  else if(ord($str[$i])>31) $alltext .= $str[$i];
 	}
 	}
-	$alltext = str_replace("¡¡"," ",$alltext);
+	$alltext = str_replace("ã€€"," ",$alltext);
 	$alltext = preg_replace("/&([^;&]*)(;|&)/","",$alltext);
 	$alltext = preg_replace("/[ ]+/s"," ",$alltext);
 	return $alltext;
@@ -882,16 +882,16 @@ function substring_utf8($str, $start, $lenth)
 
 function get_info_life_time($time)
 {
-	global $timestamp;
+    $timestamp = time();
 	$last_time = round(($time > 0 ? ($time - $timestamp) : 0)/(3600*24));
 	if($last_time >= 5){
-		$last_time = "»¹ÓĞ<font color=green>$last_time</font>Ìì¹ıÆÚ";
-	}elseif($last_time > 0 && $lastime < 5){
-		$last_time = "»¹ÓĞ<font color=red>$last_time</font>Ìì¹ıÆÚ";
+		$last_time = "è¿˜æœ‰<font color=green>$last_time</font>å¤©è¿‡æœŸ";
+	}elseif($last_time > 0 && $last_time < 5){
+		$last_time = "è¿˜æœ‰<font color=red>$last_time</font>å¤©è¿‡æœŸ";
 	}elseif($last_time == 0){
-		$last_time = '<font color=green>³¤ÆÚÓĞĞ§</font>';
+		$last_time = '<font color=green>é•¿æœŸæœ‰æ•ˆ</font>';
 	}else{
-		$last_time = '<font color=red>ÒÑ¹ıÆÚ</font>';
+		$last_time = '<font color=red>å·²è¿‡æœŸ</font>';
 	}
 	return $last_time;
 }
@@ -964,18 +964,18 @@ function Rewrite($types, $params){
 				'directory'=>0
 			);
     extract(array_merge($args, $params));
-	if(!$seo) $seo = get_seoset();//»ñµÃSEOÅäÖÃĞÅÏ¢
+	if(!$seo) $seo = get_seoset();//è·å¾—SEOé…ç½®ä¿¡æ¯
 	$uri = '';
     //$uri .= $mymps_global['SiteUrl'];
 	
     switch($types){
-		//À¸Ä¿
+		//æ ç›®
 		case 'category':
 			if($cityid) $city = get_city_caches($cityid);
 			$uri = $city['domain'] ? $city['domain'] : '';
 		
 			if($seo['seo_force_category'] == 'rewrite_py'){
-				$rewrite = 3;//Æ´ÒôÎ±¾²Ì¬
+				$rewrite = 3;//æ‹¼éŸ³ä¼ªé™æ€
 			} elseif($seo['seo_force_category'] == 'rewrite'){
 				$rewrite = 1;
 			} else {
@@ -997,14 +997,14 @@ function Rewrite($types, $params){
 			
 		break;
 		
-		//ĞÅÏ¢
+		//ä¿¡æ¯
         case 'info':
 			
 			if($cityid){
 				$city = get_city_caches($cityid);
 			}
 			if($seo['seo_force_info'] == 'rewrite_py'){
-				$rewrite = 3;//Æ´ÒôÎ±¾²Ì¬
+				$rewrite = 3;//æ‹¼éŸ³ä¼ªé™æ€
 			} elseif($seo['seo_force_info'] == 'rewrite'){
 				$rewrite = 1;
 			} else {
@@ -1034,7 +1034,7 @@ function Rewrite($types, $params){
 			}
 			
         break;
-		//Õ¾Îñ
+		//ç«™åŠ¡
         case 'about':
 			if(in_array($part,array('faq','aboutus'))){
 				$uri = $mymps_global['SiteUrl'].'/';
@@ -1069,7 +1069,7 @@ function Rewrite($types, $params){
 			
 		
         break;
-		//»ÆÒ³
+		//é»„é¡µ
 		case 'corp':
 			$rewrite = $seo['seo_force_yp'] == 'rewrite' ? 1 : 0;
 			if ($action == 'index' && empty($catid) && empty($areaid)){
@@ -1084,7 +1084,7 @@ function Rewrite($types, $params){
 				if($areaid)$uri .= '&amp;areaid=' . $areaid;
 			}
 		break;
-		//ĞÂÎÅ
+		//æ–°é—»
 		case 'news':
 			$rewrite = $seo['seo_force_news'] == 'rewrite' ? 1 : 0;
 			$uri = $mymps_global['SiteUrl'].'/';
@@ -1101,7 +1101,7 @@ function Rewrite($types, $params){
 			}
 		
 		break;
-		//¿Õ¼ä
+		//ç©ºé—´
 		case 'space':
 			$uri = $mymps_global['SiteUrl'].'/';
 			$rewrite = ($seo['seo_force_space'] == 'rewrite' && inchinese($user)) ? 1 : 0;
@@ -1111,7 +1111,7 @@ function Rewrite($types, $params){
                 $uri .= $rewrite ? 'space/' . $user .'/' : 'space.php?user='.urlencode($user);
             }
         break;
-		//µêÆÌ
+		//åº—é“º
 		case 'store':
 			$uri = $mymps_global['SiteUrl'].'/';
 			$rewrite = $seo['seo_force_store'] == 'rewrite' ? 1 : 0;
@@ -1168,7 +1168,7 @@ function get_member_docutype(){
 	return $res;
 }
 
-/*°Ù±¦Ïä*/
+/*ç™¾å®ç®±*/
 function mymps_get_lifebox($num='12',$cityid=NULL){
 	global $db,$db_mymps;
 	$city_limit = $cityid ? " AND cityid = '$cityid'" : " AND cityid = '0'";
@@ -1181,7 +1181,7 @@ function mymps_get_lifebox($num='12',$cityid=NULL){
 	return $list;
 }
 
-/*ÍøÕ¾¹«¸æ*/
+/*ç½‘ç«™å…¬å‘Š*/
 function mymps_get_announce($num='12',$cityid=NULL){
 	global $db,$db_mymps,$timestamp;
 	$city_limit = $cityid ? " AND cityid = '$cityid'" : " AND cityid = '0'";
@@ -1198,7 +1198,7 @@ function mymps_get_announce($num='12',$cityid=NULL){
 	return $list;
 }
 
-/*±ãÃñµç»°*/
+/*ä¾¿æ°‘ç”µè¯*/
 function mymps_get_telephone($num='20',$cityid=NULL){
 	global $db,$db_mymps;
 	
@@ -1240,19 +1240,19 @@ function get_seoset(){
 }
 
 /*************************/
-/* È¡µÃµ±Ç°Î»ÖÃºÍÒ³Ãæ±êÌâ*/
+/* å–å¾—å½“å‰ä½ç½®å’Œé¡µé¢æ ‡é¢˜*/
 /*************************/
 function get_location($type = 'category',$cat = 0, $str = '', $extra='',$pdetail='')
 {
 	global $seo,$pluginsettings,$mymps_global,$city,$areaid,$streetid;
 	$raquo = $mymps_global['cfg_raquo'];
-	/* ´¦ÀíÇ°Ãæ²¿·Ö */
+	/* å¤„ç†å‰é¢éƒ¨åˆ† */
 	if(!$seo) $seo	= get_seoset();
 	$seo['seo_sitename'] = str_replace('{city}',$city['cityname'],$seo['seo_sitename']);
 	if(in_array($type,array('channel','news'))){
-		$location   = 'µ±Ç°Î»ÖÃ£º<a href="'.$mymps_global[SiteUrl].'">'.$mymps_global['SiteName'].'</a>';
+		$location   = 'å½“å‰ä½ç½®ï¼š<a href="'.$mymps_global[SiteUrl].'">'.$mymps_global['SiteName'].'</a>';
 	}else{
-		$location   = 'µ±Ç°Î»ÖÃ£º<a href="'.$city[domain].'">'.$city['cityname'].$mymps_global['SiteName'].'</a>';
+		$location   = 'å½“å‰ä½ç½®ï¼š<a href="'.$city[domain].'">'.$city['cityname'].$mymps_global['SiteName'].'</a>';
 	}
 	
 	if($type == 'news'){
@@ -1273,14 +1273,14 @@ function get_location($type = 'category',$cat = 0, $str = '', $extra='',$pdetail
 		}
 		
 		if($type == 'channel'){
-			$location .= ' <code>'.$raquo.'</code> <a href="'.Rewrite('news',array('action'=>'index')).'">'.$city[cityname].'ÍøÕ¾ĞÂÎÅ</a>';
-			$page_title = $city['cityname'].'ÍøÕ¾ĞÂÎÅ - '.$page_title;
+			$location .= ' <code>'.$raquo.'</code> <a href="'.Rewrite('news',array('action'=>'index')).'">'.$city[cityname].'ç½‘ç«™æ–°é—»</a>';
+			$page_title = $city['cityname'].'ç½‘ç«™æ–°é—» - '.$page_title;
 		} elseif($type == 'corp') {
-			$location .= ' <code>'.$raquo.'</code> <a href="'.Rewrite('corp',array('action'=>'index')).'">'.$city[cityname].'ÉÌ¼ÒµêÆÌ</a>';
-			$page_title = $city[cityname].'ÉÌ¼ÒµêÆÌ - '.$page_title;
+			$location .= ' <code>'.$raquo.'</code> <a href="'.Rewrite('corp',array('action'=>'index')).'">'.$city[cityname].'å•†å®¶åº—é“º</a>';
+			$page_title = $city[cityname].'å•†å®¶åº—é“º - '.$page_title;
 		}
 		
-		/* Ñ­»··ÖÀà */
+		/* å¾ªç¯åˆ†ç±» */
 		if (!empty($cat_arr)){
 			krsort($cat_arr);
 			foreach ($cat_arr as $val){
@@ -1296,10 +1296,10 @@ function get_location($type = 'category',$cat = 0, $str = '', $extra='',$pdetail
 	
 	if(in_array($type,array('channel','news'))) $location = str_replace($city['domain'],'',$location);
 	
-    /* ´¦Àí×îºóÒ»²¿·Ö */
+    /* å¤„ç†æœ€åä¸€éƒ¨åˆ† */
     if (!empty($str)){
-        $page_title = $str.($type == 'space' ? 'µÄ¸öÈË¿Õ¼ä' : '').' - '.$page_title;
-        $location   .= ' <code>'.$raquo.'</code> &nbsp;' .$str.($type == 'space' ? 'µÄ¸öÈË¿Õ¼ä' : '');
+        $page_title = $str.($type == 'space' ? 'çš„ä¸ªäººç©ºé—´' : '').' - '.$page_title;
+        $location   .= ' <code>'.$raquo.'</code> &nbsp;' .$str.($type == 'space' ? 'çš„ä¸ªäººç©ºé—´' : '');
     }
 	
 	$page_title = $pdetail ? $pdetail : $page_title;
@@ -1307,7 +1307,7 @@ function get_location($type = 'category',$cat = 0, $str = '', $extra='',$pdetail
 	$cur = array('page_title'=>$page_title,'location'=>$location);
 
 	unset($page_title,$cat,$location,$type);
-    /* ·µ»ØÖµ */
+    /* è¿”å›å€¼ */
     return $cur;
 }
 
@@ -1323,8 +1323,8 @@ function get_upload_image_view($if_upimg = 1 , $infoid = '')
 	
 	$mymps=<<<html
 
-	<input class="input" id="insetIMG" name="imgs[]" type="file" multiple="multiple"  datatype="filter" msg="Í¼Æ¬ÎÄ¼ş¸ñÊ½²»ÕıÈ·">
-	<input class="input" type="file"  name='mymps_img_0' datatype="filter" style="display:none" msg="Í¼Æ¬ÎÄ¼ş¸ñÊ½²»ÕıÈ·">
+	<input class="input" id="insetIMG" name="imgs[]" type="file" multiple="multiple"  datatype="filter" msg="å›¾ç‰‡æ–‡ä»¶æ ¼å¼ä¸æ­£ç¡®">
+	<input class="input" type="file"  name='mymps_img_0' datatype="filter" style="display:none" msg="å›¾ç‰‡æ–‡ä»¶æ ¼å¼ä¸æ­£ç¡®">
 	<br>
 <script type="text/javascript">
 	$("#insetIMG").change(function(){
@@ -1337,7 +1337,7 @@ function get_upload_image_view($if_upimg = 1 , $infoid = '')
 			$(this).parent().parent().append(imageSL+'</div>') ;
 		}
 	}) ;
-//½¨Á¢Ò»‚€¿É´æÈ¡µ½Ô“fileµÄurl
+//å»ºç«‹ä¸€å€‹å¯å­˜å–åˆ°è©²fileçš„url
 function getObjectURL(file) {
 	var url = null ; 
 	if (window.createObjectURL!=undefined) { // basic
@@ -1371,7 +1371,7 @@ $("#insetIMG").bind('change',function(){
 			setDrag(aLi[i]);
 		}
 		
-		//ÍÏ×§
+		//æ‹–æ‹½
 		function setDrag(obj){
 		
 			obj.onmouseover = function(){
@@ -1381,18 +1381,18 @@ $("#insetIMG").bind('change',function(){
 				var scrollTop = document.documentElement.scrollTop||document.body.scrollTop;
 				var scrollLeft = document.documentElement.scrollLeft||document.body.scrollLeft;
 				obj.style.zIndex = minZindex++;
-				//µ±Êó±ê°´ÏÂÊ±¼ÆËãÊó±êÓëÍÏ×§¶ÔÏóµÄ¾àÀë
+				//å½“é¼ æ ‡æŒ‰ä¸‹æ—¶è®¡ç®—é¼ æ ‡ä¸æ‹–æ‹½å¯¹è±¡çš„è·ç¦»
 				disX = event.clientX +scrollLeft-obj.offsetLeft;
 				disY = event.clientY +scrollTop-obj.offsetTop;
 				document.onmousemove=function(event){
-					//µ±Êó±êÍÏ¶¯Ê±¼ÆËãdivµÄÎ»ÖÃ
+					//å½“é¼ æ ‡æ‹–åŠ¨æ—¶è®¡ç®—divçš„ä½ç½®
 					var l = event.clientX -disX +scrollLeft;
 					var t = event.clientY -disY + scrollTop;
 					obj.style.left = l + "px";
 					obj.style.top = t + "px";
 					/*for(var i=0;i<aLi.length;i++){
 						aLi[i].className = "";
-						if(obj==aLi[i])continue;//Èç¹ûÊÇ×Ô¼ºÔòÌø¹ı×Ô¼º²»¼ÓºìÉ«ĞéÏß
+						if(obj==aLi[i])continue;//å¦‚æœæ˜¯è‡ªå·±åˆ™è·³è¿‡è‡ªå·±ä¸åŠ çº¢è‰²è™šçº¿
 						if(colTest(obj,aLi[i])){
 							aLi[i].className = "active";
 						}
@@ -1406,9 +1406,9 @@ $("#insetIMG").bind('change',function(){
 					}
 				}
 				document.onmouseup = function(){
-					document.onmousemove = null;//µ±Êó±êµ¯ÆğÊ±ÒÆ³öÒÆ¶¯ÊÂ¼ş
-					document.onmouseup = null;//ÒÆ³öupÊÂ¼ş£¬Çå¿ÕÄÚ´æ
-					//¼ì²âÊÇ·ñÆÕÅöÉÏ£¬ÔÚ½»»»Î»ÖÃ
+					document.onmousemove = null;//å½“é¼ æ ‡å¼¹èµ·æ—¶ç§»å‡ºç§»åŠ¨äº‹ä»¶
+					document.onmouseup = null;//ç§»å‡ºupäº‹ä»¶ï¼Œæ¸…ç©ºå†…å­˜
+					//æ£€æµ‹æ˜¯å¦æ™®ç¢°ä¸Šï¼Œåœ¨äº¤æ¢ä½ç½®
 					var oNear = findMin(obj);
 					if(oNear){
 						oNear.className = "img1";
@@ -1417,7 +1417,7 @@ $("#insetIMG").bind('change',function(){
 						startMove(oNear,aPos[obj.index]);
 						startMove(obj,aPos[oNear.index]);
 						
-						//½»»»index
+						//äº¤æ¢index
 										
 						oNear.index += obj.index;
 						obj.index = oNear.index - obj.index;
@@ -1462,11 +1462,11 @@ $("#insetIMG").bind('change',function(){
 					}
 				}
 				clearInterval(obj.timer);
-				return false;//µÍ°æ±¾³öÏÖ½ûÖ¹·ûºÅ
+				return false;//ä½ç‰ˆæœ¬å‡ºç°ç¦æ­¢ç¬¦å·
 			}
 		}
 		
-		//Åö×²¼ì²â
+		//ç¢°æ’æ£€æµ‹
 		function colTest(obj1,obj2){
 			var t1 = obj1.offsetTop;
 			var r1 = obj1.offsetWidth+obj1.offsetLeft;
@@ -1484,13 +1484,13 @@ $("#insetIMG").bind('change',function(){
 				return true;
 			}
 		}
-		//¹´¹É¶¨ÀíÇó¾àÀë
+		//å‹¾è‚¡å®šç†æ±‚è·ç¦»
 		function getDis(obj1,obj2){
 			var a = obj1.offsetLeft-obj2.offsetLeft;
 			var b = obj1.offsetTop-obj2.offsetTop;
 			return Math.sqrt(Math.pow(a,2)+Math.pow(b,2));
 		}
-		//ÕÒµ½¾àÀë×î½üµÄ
+		//æ‰¾åˆ°è·ç¦»æœ€è¿‘çš„
 		function findMin(obj){
 			var minDis = 999999999;
 			var minIndex = -1;
@@ -1510,7 +1510,7 @@ $("#insetIMG").bind('change',function(){
 				return aLi[minIndex];
 			}
 		}
-		function getStyle(obj,attr){//½â¾öJS¼æÈİÎÊÌâ»ñÈ¡ÕıÈ·µÄÊôĞÔÖµ
+		function getStyle(obj,attr){//è§£å†³JSå…¼å®¹é—®é¢˜è·å–æ­£ç¡®çš„å±æ€§å€¼
 	return obj.currentStyle?obj.currentStyle[attr]:getComputedStyle(obj,false)[attr];
 }
 function startMove(obj,json,fun){
@@ -1519,20 +1519,20 @@ function startMove(obj,json,fun){
 		var isStop = true;
 		for(var attr in json){
 			var iCur = 0;
-			//ÅĞ¶ÏÔË¶¯µÄÊÇ²»ÊÇÍ¸Ã÷¶ÈÖµ
+			//åˆ¤æ–­è¿åŠ¨çš„æ˜¯ä¸æ˜¯é€æ˜åº¦å€¼
 			if(attr=="opacity"){
 				iCur = parseInt(parseFloat(getStyle(obj,attr))*100);
 			}else{
 				iCur = parseInt(getStyle(obj,attr));
 			}
 			var ispeed = (json[attr]-iCur)/8;
-			//ÔË¶¯ËÙ¶ÈÈç¹û´óÓÚ0ÔòÏòÏÂÈ¡Õû£¬Èç¹ûĞ¡ÓÚ0ÏëÉÏÈ¡Õû£»
+			//è¿åŠ¨é€Ÿåº¦å¦‚æœå¤§äº0åˆ™å‘ä¸‹å–æ•´ï¼Œå¦‚æœå°äº0æƒ³ä¸Šå–æ•´ï¼›
 			ispeed = ispeed>0?Math.ceil(ispeed):Math.floor(ispeed);
-			//ÅĞ¶ÏËùÓĞÔË¶¯ÊÇ·ñÈ«²¿Íê³É
+			//åˆ¤æ–­æ‰€æœ‰è¿åŠ¨æ˜¯å¦å…¨éƒ¨å®Œæˆ
 			if(iCur!=json[attr]){
 				isStop = false;
 			}
-			//ÔË¶¯¿ªÊ¼
+			//è¿åŠ¨å¼€å§‹
 			if(attr=="opacity"){
 				obj.style.filter = "alpha:(opacity:"+(json[attr]+ispeed)+")";
 				obj.style.opacity = (json[attr]+ispeed)/100;
@@ -1540,7 +1540,7 @@ function startMove(obj,json,fun){
 				obj.style[attr] = iCur+ispeed+"px";
 			}
 		}
-		//ÅĞ¶ÏÊÇ·ñÈ«²¿Íê³É
+		//åˆ¤æ–­æ˜¯å¦å…¨éƒ¨å®Œæˆ
 		if(isStop){
 			clearInterval(obj.timer);
 			if(fun){
@@ -1564,7 +1564,7 @@ function get_upload_image_edit($if_upimg = 1,$infoid,$admin='no'){
 	if($if_upimg == 1){
 		$cfg_upimg_number = $mymps_global[cfg_upimg_number]?$mymps_global[cfg_upimg_number]:'4';
 		if($admin == 'no'){
-			$mymps .='<tr><td class=tdr>ÉÏ´«Í¼Æ¬£º</td><td class="upload_img">';
+			$mymps .='<tr><td class=tdr>ä¸Šä¼ å›¾ç‰‡ï¼š</td><td class="upload_img">';
 		}else{
 			$mymps .='<div class="upload_img"><span>';
 		}
@@ -1579,7 +1579,7 @@ function get_upload_image_edit($if_upimg = 1,$infoid,$admin='no'){
 			<ul>
 			<div class="preview"><img src="'.$imagei.'" name="img'.$i.'" id="img'.$i.'" style="width:120px; height:120px;"></div>
 			<li><input class="img_input" type="file" onpropertychange="if(CheckFile(this.value,this))img'.$i.'.src=this.value" name=mymps_img_'.$i.' onkeydown="return false" onpaste="return false" ondragenter="return false"></li>
-			<li style="text-align:center; font-weight:100; color:#000; font-size:12px; line-height:22px"><input name="delinfoimg['.$i.']" type="checkbox" class="checkbox"> <font>É¾?</font></li>
+			<li style="text-align:center; font-weight:100; color:#000; font-size:12px; line-height:22px"><input name="delinfoimg['.$i.']" type="checkbox" class="checkbox"> <font>åˆ ?</font></li>
 			</ul>
 			';
 		}
@@ -1606,17 +1606,17 @@ function get_format_time($time){
         $limit = ($timestamp ? $timestamp : time()) - $time;
 	
 	if($limit<60){
-		$strTime=$limit.'ÃëÖÓÇ°';	
+		$strTime=$limit.'ç§’é’Ÿå‰';	
 	}else if($limit/60<60){
-		$strTime=floor($limit/60).'·ÖÖÓÇ°';
+		$strTime=floor($limit/60).'åˆ†é’Ÿå‰';
 	}else if($limit/60/60<24){
-		$strTime=floor($limit/60/60).'Ğ¡Ê±Ç°';
+		$strTime=floor($limit/60/60).'å°æ—¶å‰';
 	}else if($limit/60/60>24&&$limit/60/60<48){
-		$strTime='×òÌì'.date('H:i',$time);
+		$strTime='æ˜¨å¤©'.date('H:i',$time);
 	}else if($limit/60/60/24>2 && $limit/60/60/24<3){
-		$strTime='Ç°Ìì'.date('H:i',$time);	
+		$strTime='å‰å¤©'.date('H:i',$time);	
 	}else if($limit/60/60/24<7){
-		$strTime=floor($limit/60/60/24).'ÌìÇ°';
+		$strTime=floor($limit/60/60/24).'å¤©å‰';
 	}else{
 		$strTime=date('y-m-d',$time);
 	}
@@ -1650,7 +1650,7 @@ function submit_check($var, $allowget = 0) {
 }
 
 function get_sex_option($cursex=''){
-	foreach (array('ÄĞ','Å®') as $key){
+	foreach (array('ç”·','å¥³') as $key){
 		$mymps .= '<option value='.$key;
 		$mymps .= ($cursex == $key) ? ' style = "background-color:#6EB00C;color:white" selected>' : '>';
 		$mymps .= $key.'</option>';
@@ -1673,21 +1673,21 @@ function get_memtpl_options($opt=''){
 	return $mymps;
 }
 
-//¸ù¾İÉèÖÃµÄÀ¸Ä¿Ãû³ÆºÍÀ¸Ä¿ID£¬»ñµÃÀ¸Ä¿µÄÊµ¼Ê±£´æÂ·¾¶
+//æ ¹æ®è®¾ç½®çš„æ ç›®åç§°å’Œæ ç›®IDï¼Œè·å¾—æ ç›®çš„å®é™…ä¿å­˜è·¯å¾„
 function get_htmlpath_type($dir_type,$typename,$id,$mydir){
-	//Â·¾¶ÀàĞÍÅĞ¶Ï
+	//è·¯å¾„ç±»å‹åˆ¤æ–­
 	if($dir_type == 1){
-		//°´À¸Ä¿ID
+		//æŒ‰æ ç›®ID
 		$html_path = $id;
 	} elseif ($dir_type == 2) {
-		//°´À¸Ä¿Æ´Òô
+		//æŒ‰æ ç›®æ‹¼éŸ³
 		$html_path = GetPinyin($typename);
 	} elseif ($dir_type == 3) {
-		//°´À¸Ä¿Æ´ÒôÊ××ÖÄ¸
+		//æŒ‰æ ç›®æ‹¼éŸ³é¦–å­—æ¯
 		$html_path = GetPinyin($typename,1);
 	} elseif ($dir_type == 4) {
-		//×Ô¶¨ÒåÀ¸Ä¿Ãû
-		!$mydir && write_msg('ÇëÌîĞ´×Ô¶¨ÒåÀ¸Ä¿Ãû£¡');
+		//è‡ªå®šä¹‰æ ç›®å
+		!$mydir && write_msg('è¯·å¡«å†™è‡ªå®šä¹‰æ ç›®åï¼');
 		$html_path = $mydir;
 	} else {
 		$html_path = false;
@@ -1893,7 +1893,7 @@ function get_info_option_array(){
 }
 
 function get_info_option_titval($option,$value,$class="mayi"){
-	global $charset;
+    $charset = 'utf-8';
 	if(!is_array($option) || empty($option)){
 		return array();
 	} else {
@@ -1941,7 +1941,7 @@ function ajax_output($ajax_content){
 }
 
 /**************************/
-/*»ñµÃ¸÷Ä£ĞÍÔÊĞíÌá½»µÄ²ÎÊı*/
+/*è·å¾—å„æ¨¡å‹å…è®¸æäº¤çš„å‚æ•°*/
 /**************************/
 function allow_identifier(){
 	$data = read_static_cache("mod_search_identifier");
@@ -1970,7 +1970,7 @@ function allow_identifier(){
 }
 
 /**********************/
-/*»ñµÃĞÅÏ¢É¸Ñ¡Ìõ¼şÑ¡Ïî*/
+/*è·å¾—ä¿¡æ¯ç­›é€‰æ¡ä»¶é€‰é¡¹*/
 /**********************/
 function mod_identifier(){
 	$data = read_static_cache("mod_search_option");
@@ -1988,7 +1988,7 @@ function mod_identifier(){
 						if(is_array($extra)){
 							foreach($extra as $k => $value){
 								if($nrow[type] == 'radio' || $nrow[type] == 'select' || $nrow[type] == 'checkbox' || ($nrow[type] == 'number' && $k == 'choices')){
-									$extr = array_merge(array('-1'=>'²»ÏŞ'),arraychange($value));
+									$extr = array_merge(array('-1'=>'ä¸é™'),arraychange($value));
 									foreach($extr as $ekey => $eval){
 										$ar['id']  = $ekey;
 										$ar['name']  = $eval;
@@ -2036,10 +2036,10 @@ function mymps_get_focus($type='index',$num=5,$cityid=NULL){
 	global $db,$db_mymps,$independency;
 
 	if(!$independency) $independency = array();
-	//2016.5.4 ĞŞ¸Ä
+	//2016.5.4 ä¿®æ”¹
 	//$city_limit = (in_array('focus',$independency) || !$cityid) ? "" : " AND cityid = '$cityid'";
 	$city_limit = (in_array('focus',$independency) && !$cityid) ? "" : " AND cityid = '$cityid'";
-	$type_limit = $type == "index" ? " AND typename= 'ÍøÕ¾Ê×Ò³'" : " AND typename = 'ĞÂÎÅÊ×Ò³'";
+	$type_limit = $type == "index" ? " AND typename= 'ç½‘ç«™é¦–é¡µ'" : " AND typename = 'æ–°é—»é¦–é¡µ'";
 
 	$query = $db -> query("SELECT image,pre_image,url,words,id FROM `{$db_mymps}focus` WHERE 1 {$type_limit} {$city_limit} ORDER BY focusorder DESC LIMIT 0,$num");
 	while($row = $db -> fetchRow($query)){
@@ -2134,7 +2134,7 @@ function mymps_get_members($num=NULL,$level=NULL,$orderby=NULL,$if_certify=NULL,
 	return $member_list;
 }
 
-/*»ñµÃ»ú¹¹ÎÄµµ/ÎÄÕÂ*/
+/*è·å¾—æœºæ„æ–‡æ¡£/æ–‡ç« */
 function mymps_get_member_docus($num=10,$userid=NULL,$typeid=NULL,$orderby=1){
 	global $db,$db_mymps;
 	$where = "WHERE a.if_check = '1'";
@@ -2162,7 +2162,7 @@ function mymps_get_member_docus($num=10,$userid=NULL,$typeid=NULL,$orderby=1){
 }
 
 /*
- *»ñµÃĞÅÏ¢ÁĞ±í
+ *è·å¾—ä¿¡æ¯åˆ—è¡¨
  */
 function mymps_get_infos($num=10,$info_level=NULL,$upgrade_type=NULL,$userid=NULL,$catid=NULL,$certify=NULL,$if_hot=NULL,$tel=NULL,$cityid=NULL){
 	global $timestamp,$db_mymps,$mymps_global,$db,$city,$seo;
@@ -2590,7 +2590,7 @@ function mymps_get_upindex_fang($num=10,$upindex=NULL,$slen=20,$upgrade_type=NUL
 	}
 	return $info_list;
 }
-/*ÍÅ¹º»î¶¯*/
+/*å›¢è´­æ´»åŠ¨*/
 function mymps_get_groups($num=10,$glevel=NULL,$cityid=false)
 {
 	global $db,$db_mymps;
@@ -2614,7 +2614,7 @@ function mymps_get_groups($num=10,$glevel=NULL,$cityid=false)
 	return $res;
 }
 
-/*ÉÌÆ·*/
+/*å•†å“*/
 function mymps_get_goods($num=10,$onsale=1,$shuxing=NULL,$catid=NULL,$userid=NULL,$orderby=1,$cityid=false)
 {
 	global $db,$db_mymps;
@@ -2643,7 +2643,7 @@ function mymps_get_goods($num=10,$onsale=1,$shuxing=NULL,$catid=NULL,$userid=NUL
 	return $res;
 }
 
-/*ÓÅ»İÈ¯*/
+/*ä¼˜æƒ åˆ¸*/
 function mymps_get_coupons($num=10,$grade=0)
 {
 	global $db,$db_mymps,$city;
@@ -2676,7 +2676,7 @@ function getfoottext($cityid=0,$title=''){
 	return $res;
 }
 
-//»ñµÃµ¼º½  Ö÷µ¼º½ ¸±µ¼º½ Î²²¿µ¼º½
+//è·å¾—å¯¼èˆª  ä¸»å¯¼èˆª å‰¯å¯¼èˆª å°¾éƒ¨å¯¼èˆª
 function mymps_get_navurl($type,$num='30'){
 	$data = read_static_cache('navurl_'.$type);
 	if ($data === false){
@@ -2695,18 +2695,18 @@ function mymps_get_navurl($type,$num='30'){
 	return $res;
 }
 function getheadgg(){
-	$sql="select * from {$GLOBALS['db_mymps']}advertisement where title='Í·²¿¹ã¸æĞ¡Í¼'";
+	$sql="select * from {$GLOBALS['db_mymps']}advertisement where title='å¤´éƒ¨å¹¿å‘Šå°å›¾'";
 	$adv=$GLOBALS['db']->getRow($sql);
 	return $adv;
 }
 
 function getheadhfgg(){
-	$sql="select * from {$GLOBALS['db_mymps']}advertisement where title='Í·²¿ºá·ù¹ã¸æ'";
+	$sql="select * from {$GLOBALS['db_mymps']}advertisement where title='å¤´éƒ¨æ¨ªå¹…å¹¿å‘Š'";
 	$hf_adv=$GLOBALS['db']->getRow($sql);
 	return $hf_adv;
 }
 /*
- *aboutus.php È¡µÃaboutus
+ *aboutus.php å–å¾—aboutus
  */
 function get_aboutus($id=NULL){
 	global $seo;
@@ -2726,7 +2726,7 @@ function get_aboutus($id=NULL){
 	return $aboutus;
 }
 /*
- faq.php È¡µÃfaq
+ faq.php å–å¾—faq
  */
 function get_faq($id=NULL){
 	global $seo,$db,$db_mymps;
@@ -2751,7 +2751,7 @@ function get_faq($id=NULL){
 	return $faq;
 }
 /*
- *È¡µÃÄÚÒ³ÓÑÇéÁ´½Ó
+ *å–å¾—å†…é¡µå‹æƒ…é“¾æ¥
  */
 function get_flink(){
 	global $db,$db_mymps,$city;
@@ -2795,7 +2795,7 @@ function chk_member_purview($purview)
 {
 	global $db,$db_mymps,$s_uid;
 	$member  = get_member_group('',$s_uid);
-	!in_array($purview,explode(',',$member['purviews'])) && write_msg("Äúµ±Ç°µÄ»áÔ±¼¶±ğÃ»ÓĞ¸ÃÀ¸Ä¿µÄ²Ù×÷È¨ÏŞ£¡<br />ÇëÏÈÉı¼¶»áÔ±¼¶±ğ£¡","index.php?m=levelup");
+	!in_array($purview,explode(',',$member['purviews'])) && write_msg("æ‚¨å½“å‰çš„ä¼šå‘˜çº§åˆ«æ²¡æœ‰è¯¥æ ç›®çš„æ“ä½œæƒé™ï¼<br />è¯·å…ˆå‡çº§ä¼šå‘˜çº§åˆ«ï¼","index.php?m=levelup");
 }
 
 function get_member_group($groupid='',$userid=''){
@@ -2910,7 +2910,7 @@ function cutstr($string, $length, $dot = '') {
 	return $strcut.$dot;
 }
 
-/*¼ÓÃÜÓë½âÃÜ*/
+/*åŠ å¯†ä¸è§£å¯†*/
 function mmd5($string,$action="EN",$rand='',$db_mixcode=''){ 
 	global $db_mixcode;
     $secret_string = $db_mixcode.$rand.'^fgfZ4_9dfjdf';
@@ -2984,7 +2984,7 @@ function ifsiteopen(){
 	global $mymps_global;
 	if($mymps_global['cfg_if_site_open'] != 1) {
 		$mymps_global['cfg_site_open_reason'] = str_replace('\n','<br />',$mymps_global['cfg_site_open_reason']);
-		exit('ÍøÕ¾ÒÑ¹Ø±Õ£¬¹Ø±ÕÔ­Òò£º<br><br /><b>'.$mymps_global['cfg_site_open_reason'].'</b>');
+		exit('ç½‘ç«™å·²å…³é—­ï¼Œå…³é—­åŸå› ï¼š<br><br /><b>'.$mymps_global['cfg_site_open_reason'].'</b>');
 	}
 }
 
@@ -3096,16 +3096,16 @@ function select_where($table,$name='parentid',$currentid='',$parentid=''){
 			break;
 		}
 		
-		return $view ? "<select  class='input' style='width:140px' id='$table' name=$name><option value=''>ÇëÑ¡Ôñ</option>$view</select>" : "";
+		return $view ? "<select  class='input' style='width:140px' id='$table' name=$name><option value=''>è¯·é€‰æ‹©</option>$view</select>" : "";
 		
 	}
 }
 
-//»ñµÃÈı¼¶Áª¶¯select
+//è·å¾—ä¸‰çº§è”åŠ¨select
 function select_where_option($actionfile,$cityid,$areaid,$streetid){
 	$actionfile = empty($actionfile) ? $mymps_global[SiteUrl].'/include/selectwhere.php' : $actionfile;
-	$mymps .= '<select id=\'cityid\' name=\'cityid\'  onChange="choose_where(\'getarea\',this.options[this.selectedIndex].value,\'\',\'1\')"  class="input" style="width:140px!important;" require="true" datatype="limit" msgid="µØÇø" msg="ÇëÑ¡ÔñËùÔÚ·ÖÕ¾">
-<option value=\'\'  selected >ÇëÑ¡ÔñËùÔÚ·ÖÕ¾</option>';
+	$mymps .= '<select id=\'cityid\' name=\'cityid\'  onChange="choose_where(\'getarea\',this.options[this.selectedIndex].value,\'\',\'1\')"  class="input" style="width:140px!important;" require="true" datatype="limit" msgid="åœ°åŒº" msg="è¯·é€‰æ‹©æ‰€åœ¨åˆ†ç«™">
+<option value=\'\'  selected >è¯·é€‰æ‹©æ‰€åœ¨åˆ†ç«™</option>';
 	$mymps .= get_cityoptions($cityid);
 	$mymps .= '</select>
 <span id="showarea"></span>&nbsp;<span id="showstreet"></span>';
@@ -3272,7 +3272,7 @@ function ip2city($ip) {
 	}
 }
 
-/**»ñÈ¡ÓÃ»§µÄÀ´Ô´³ÇÊĞ**/
+/**è·å–ç”¨æˆ·çš„æ¥æºåŸå¸‚**/
 function get_ip2city($ip){
 	global $db,$db_mymps;
 	
@@ -3281,7 +3281,7 @@ function get_ip2city($ip){
 	// exit;
 	if(is_array($all_cities = get_allcities())){
 		foreach($all_cities as $k => $v){
-			$v['cityname']=str_replace(array("ÊĞ","Çø"," "),array("","",""),$v['cityname']);
+			$v['cityname']=str_replace(array("å¸‚","åŒº"," "),array("","",""),$v['cityname']);
 			if(@strstr($area,$v['cityname'])){
 				return $v;
 			}
@@ -3294,7 +3294,7 @@ function get_latlng2cityid($lat='',$lng=''){
 	if($lat && $lng){
 		$array = json_decode(file_get_contents("http://api.map.baidu.com/geocoder?output=json&location=$lat,$lng"),true);
 		$city = $charset == 'gbk' ? iconv('UTF-8','GBK',$array['result']['addressComponent']['city']) : $array['result']['addressComponent']['city'];
-		$city = str_replace(array('ÊĞ','Çø'),array('',''),$city);
+		$city = str_replace(array('å¸‚','åŒº'),array('',''),$city);
 		if(is_array($all_cities = get_allcities())){
 			foreach($all_cities as $k => $v){
 				if($city == $v['cityname']){
@@ -3306,7 +3306,7 @@ function get_latlng2cityid($lat='',$lng=''){
 	return 0;
 }
 
-/*»ñµÃä¯ÀÀÆ÷°æ±¾ĞÅÏ¢*/
+/*è·å¾—æµè§ˆå™¨ç‰ˆæœ¬ä¿¡æ¯*/
 function getbrowser() {  
     global $_SERVER;  
     $agent  = $_SERVER['HTTP_USER_AGENT'];  
@@ -3341,7 +3341,7 @@ function getbrowser() {
       $browser       = '(Internet Explorer ' .$browser_ver. ') 360SE';
       $browser_ver   = '';  
     }elseif (preg_match('/SE 2.x/i', $agent, $regs)) {  
-      $browser       = '(Internet Explorer ' .$browser_ver. ') ËÑ¹·';  
+      $browser       = '(Internet Explorer ' .$browser_ver. ') æœç‹—';  
       $browser_ver   = '';  
     }elseif (preg_match('/FireFox\/([^\s]+)/i', $agent, $regs)) {  
       $browser  = 'FireFox';  
@@ -3355,11 +3355,11 @@ function getbrowser() {
        return $browser.' '.$browser_ver;  
     }  
     else {  
-      return 'Î´Öªä¯ÀÀÆ÷°æ±¾';
+      return 'æœªçŸ¥æµè§ˆå™¨ç‰ˆæœ¬';
     }  
 }
 
-/*»ñµÃ²Ù×÷ÏµÍ³ĞÅÏ¢*/
+/*è·å¾—æ“ä½œç³»ç»Ÿä¿¡æ¯*/
 function getos() {
     $agent = $_SERVER['HTTP_USER_AGENT'];  
     $os = false;  
@@ -3553,15 +3553,15 @@ function _Array_Combine($_Arr1, $_Arr2)
 
 function get_info_var_type($type,$name="",$rules="",$value="",$forward='back',$title='',$require=''){
     $mymps = '';
-    $required = $require == 1 ? "require=\"true\" datatype=\"limit\" msg=\"".$title."²»ÄÜÎª¿Õ\"" : "";
+    $required = $require == 1 ? "require=\"true\" datatype=\"limit\" msg=\"".$title."ä¸èƒ½ä¸ºç©º\"" : "";
     if($forward == 'back'){
         switch($type){
             case 'text':
-                $mymps_rule_str = $rules[maxlength]?$rules[maxlength]."×Ö·ûÒÔÄÚ":"";
+                $mymps_rule_str = $rules[maxlength]?$rules[maxlength]."å­—ç¬¦ä»¥å†…":"";
                 $mymps .= "<input name=\"extra[".$name."]\" value=\"".$value."\" type=\"text\" size=\"26\" ".$required."> ".$mymps_rule_str;
                 break;
             case 'textarea':
-                $mymps_rule_str = $rules[maxlength]?"<br />²»µÃ³¬¹ı".$rules[maxlength]."¸ö×Ö·û":"";
+                $mymps_rule_str = $rules[maxlength]?"<br />ä¸å¾—è¶…è¿‡".$rules[maxlength]."ä¸ªå­—ç¬¦":"";
                 $mymps = "<textarea name=\"extra[".$name."]\"  ".$required.">".$value."</textarea> ".$mymps_rule_str;
                 break;
             case 'radio':
@@ -3570,7 +3570,7 @@ function get_info_var_type($type,$name="",$rules="",$value="",$forward='back',$t
             case 'checkbox':
                 $count = $require == 1 ? count($rules) : "";
                 $new_value = explode(",",$value);
-                $required = "min=1 max=$count require=\"true\" datatype=\"limit|group\" msgid = $title  msg=\"±ØĞëÒªÑ¡ÔñÒ»¸ö".$title."\"";
+                $required = "min=1 max=$count require=\"true\" datatype=\"limit|group\" msgid = $title  msg=\"å¿…é¡»è¦é€‰æ‹©ä¸€ä¸ª".$title."\"";
                 $mymps = "<div class=\"checkboxinner style=float:left;\">";
                 foreach($rules as $k => $v){
                     $mymps .= "<label for=\"".$name.$k."\" style=\"margin:0 10px 0 0;\"><input $required id=\"".$name.$k."\" name=\"extra[".$name."][]\" type=\"checkbox\" class=\"checkbox\" value=\"".$k."\"";
@@ -3582,9 +3582,9 @@ function get_info_var_type($type,$name="",$rules="",$value="",$forward='back',$t
                 break;
             case 'select':
                 $mymps .="<div class=\"select\">";
-                //$mymps .="<label class=\"psu\">ÇëÑ¡Ôñ</label>";
+                //$mymps .="<label class=\"psu\">è¯·é€‰æ‹©</label>";
                 $mymps .= "<select name=\"extra[".$name."]\" class=\"decorate\" ".$required.">";
-                $mymps .= "<option value=\"\">ÇëÑ¡Ôñ".$title."</option>";
+                $mymps .= "<option value=\"\">è¯·é€‰æ‹©".$title."</option>";
                 foreach($rules as $k => $v){
                     $mymps .= "<option value=\"".$k."\"";
                     $mymps .= ($k == $value)?"selected ":"";
@@ -3600,11 +3600,11 @@ function get_info_var_type($type,$name="",$rules="",$value="",$forward='back',$t
     } else {
         switch($type){
             case 'text':
-                $mymps_rule_str = $rules[maxlength]?$rules[maxlength]."×Ö·ûÒÔÄÚ":"";
+                $mymps_rule_str = $rules[maxlength]?$rules[maxlength]."å­—ç¬¦ä»¥å†…":"";
                 $mymps .= "<input name=\"".$name."\" value=\"".$value."\" type=\"text\" size=\"26\"> ".$mymps_rule_str;
                 break;
             case 'textarea':
-                $mymps_rule_str = $rules[maxlength]?"<br />²»µÃ³¬¹ı".$rules[maxlength]."¸ö×Ö·û":"";
+                $mymps_rule_str = $rules[maxlength]?"<br />ä¸å¾—è¶…è¿‡".$rules[maxlength]."ä¸ªå­—ç¬¦":"";
                 $mymps = "<textarea name=\"".$name."\"  cols=\"100\" rows=\"10\" class=\"input\">".$value."</textarea> ".$mymps_rule_str;
                 break;
             case 'radio':
@@ -3625,7 +3625,7 @@ function get_info_var_type($type,$name="",$rules="",$value="",$forward='back',$t
                 break;
             case 'select':
                 $mymps .= "<select name=\"".$name."\" class=\"decorate\" >";
-                $mymps .= "<option value=\"\">ÇëÑ¡Ôñ".$title."</option>";
+                $mymps .= "<option value=\"\">è¯·é€‰æ‹©".$title."</option>";
                 foreach($rules as $k => $v){
                     $mymps .= "<option value=\"".$k."\"";
                     $mymps .= ($k == $value)?"selected ":"";
@@ -3634,7 +3634,7 @@ function get_info_var_type($type,$name="",$rules="",$value="",$forward='back',$t
                 $mymps .= "</select>";
                 break;
             case 'number':
-                $mymps .= "<input name=\"".$name."[min]\" type=\"text\"> ÖÁ <input  name=\"".$name."[max]\" type=\"text\" float:none;\"> ";
+                $mymps .= "<input name=\"".$name."[min]\" type=\"text\"> è‡³ <input  name=\"".$name."[max]\" type=\"text\" float:none;\"> ";
                 break;
         }
     }

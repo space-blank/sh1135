@@ -123,4 +123,24 @@ class Category extends BaseModel
 
         return $return;
     }
+
+    /**
+     * 获取子节点的所有父元素
+     *
+     * @param $catid
+     * @return array
+     */
+    public static function getParentsByNode($catid){
+        $info = self::select(['catid', 'catname', 'parentid'])->find($catid)->toArray();
+        if($info){
+            if($info['parentid']){
+                $pre = self::getParentsByNode($info['parentid']);
+                $pre[] = ['catid' => $info['catid'], 'catname' => $info['catname']];
+                return $pre;
+            }else{
+                return [['catid' => $info['catid'], 'catname' => $info['catname']]];
+            }
+        }
+        return [];
+    }
 }
