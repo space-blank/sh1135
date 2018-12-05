@@ -98,6 +98,9 @@ class InformationController extends Controller
         $row = Information::select([
             'id',
             'catid',
+            'title',
+            'begintime',
+            'hit',
             'cityid',
             'endtime',
             'img_count',
