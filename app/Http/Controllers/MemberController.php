@@ -14,6 +14,8 @@ use App\Http\Models\News;
 use App\Http\Models\Street;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Intervention\Image\Facades\Image;
 
 class MemberController extends Controller
 {
@@ -133,7 +135,7 @@ class MemberController extends Controller
         $streetid = (int)$request->streetid;
 
         $userInfo = Member::select(['qq', 'email', 'mobile', 'cname'])->where('userid', $uid)->first();
-        $area = Area::where('areaid', $areaid)->value('areatname');
+        $area = Area::where('areaid', $areaid)->value('areaname');
         $street = Street::where('streetid', $streetid)->value('streetname');
         $catInfo = Category::select(['catid', 'catname', 'parentid', 'modid', 'if_upimg'])->where('catid', $catId)->first();
 
@@ -173,10 +175,11 @@ class MemberController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function addStore(Request $request){
+        $imageMaxSize = config('custom.cfg_upimg_size') * 1024;
         $rules = [
             'uid' => 'required|string',
             'contents' => 'required|string',
-            'image' => 'image',
+            'mymps_img' => 'image|max:'.$imageMaxSize,
             'title' => 'required|string',
             'contact_who' => 'required|string',
             'tel' => 'required|regex:/^1\d{10}$/',
@@ -195,6 +198,8 @@ class MemberController extends Controller
         $streetid = (int)$request->streetid;
         $content = $request->contents;
         $title = $request->title;
+        $extra = $request->extra;
+
 
         $content = $content ? textarea_post_change($content) : "";
         $result = verify_badwords_filter(0 , $title, $content);
@@ -210,7 +215,7 @@ class MemberController extends Controller
         $endtime = $endtime == 0 ? 0 : $endtime * 3600 * 24 + $begintime;
         $d = Category::select(['catname', 'dir_typename', 'modid'])->where('catid', $catId)->first();
         $userInfo = Member::select(['qq', 'email', 'mobile', 'cname'])->where('userid', $uid)->first();
-        $area = Area::where('areaid', $areaid)->value('areatname');
+        $area = Area::where('areaid', $areaid)->value('areaname');
         $street = Street::where('streetid', $streetid)->value('streetname');
 
 
@@ -218,7 +223,6 @@ class MemberController extends Controller
             $catname = $d['catname'];
             $dir_typename = $d['dir_typename'];
             $backurl = true;
-            //TODO 上传图片的限制
 
             if($uid){
                 $row = Member::select(['per_certify', 'com_certify'])->where('userid', $uid)->first();
@@ -229,7 +233,11 @@ class MemberController extends Controller
                 }
                 unset( $row );
             }
+            $timestamp = time();
+            $file = $request->file('mymps_img');
 
+            $ip = getip( );
+            $img_count = 1;
             $model = Member::create([
                 'title'=> $title,
                 'content'=> $content,
@@ -269,26 +277,28 @@ class MemberController extends Controller
                     $sql2 .= ",'".$v."'";
                 }
                 $sql = "(id.".$sql1.")VALUES('{$id}','','')";
-                DB::insert( "INSERT INTO `my_information_{$d[modid]}` (`id`{$sql1})VALUES('{$id}'{$sql2})" );
+                DB::insert( "INSERT INTO `my_information_{$d['modid']}` (`id`{$sql1})VALUES('{$id}'{$sql2})" );
                 unset( $sql1 );
                 unset( $sql2 );
             }
-            if(0 < $img_count){
-                $i = 0;
-                $timestamp = time();
-                for(;$i < $img_count;++$i) {
-                    $name_file = "mymps_img_".$i;
-                    if ($_FILES[$name_file]['name'] ){
-                        $destination = "/information/".date( "Ym" )."/";
-                        $mymps_image = start_upload( $name_file, $destination, $mymps_global['cfg_upimg_watermark'], $mymps_mymps['cfg_information_limit']['width'], $mymps_mymps['cfg_information_limit']['height'] );
-                        DB::insert( "INSERT INTO `".$db_mymps."info_img` (image_id,path,prepath,infoid,uptime) VALUES ('{$i}','{$mymps_image['0']}','{$mymps_image['1']}','{$id}','{$timestamp}')" );
-                    }
-                }
-                DB::update("UPDATE `my_information` SET img_path = '{$mymps_image[1]}' WHERE id = '{$id}'" );
+
+            if($file->isValid()){
+                $destination = "information/".date( "Ym" );
+                $cfg_information_limit = config('custom.cfg_information_limit');
+                //TODO 加水印
+                $cfg_upimg_watermark = config('custom.cfg_upimg_watermark');
+                //生成新的图片
+                $newFile = $file->storeAs(
+                    $destination, $timestamp.random()
+                );
+                //生成缩略图
+                Image::make($newFile)->resize($cfg_information_limit['width'], $cfg_information_limit['height'])->save('pre_'.$newFile);
+                $thumb = '';
+
+                DB::insert( "INSERT INTO `my_info_img` (image_id,path,prepath,infoid,uptime) VALUES (0,'{$newFile}','{$thumb}','{$id}','{$timestamp}')" );
+                DB::update("UPDATE `my_information` SET img_path = '{$thumb}' WHERE id = '{$id}'" );
             }
-
             $msg = 0 < $info_level ? "成功发布一条信息!" : "您的信息审核通过后将显示在网站上!";
-
             return $this->success([], $msg);
         }
         return $this->fail('30002');

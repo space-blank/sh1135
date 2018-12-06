@@ -154,28 +154,386 @@ class InformationController extends Controller
 //        $relevant = mymps_get_infos( 6, "", "", "", $row['catid'], "", "", "", false );
         $parentcats = Category::getParentsByNode($row['catid']);
         //推荐信息
-        $query = Category::from('category as c')->select([
-            'c.catid',
-            'c.modid',
-            'c.dir_typename',
-            'c.catname',
-            'c.usecoin',
-            'c.parentid',
-            'c.if_view',
-            'c.catorder',
-            'c.template_info',
-            DB::raw('COUNT( my_s.catid ) AS has_children')
-        ])->leftjoin('category as s', 's.parentid', '=', 'c.catid')->groupBy('c.catid')
-            ->orderBy('c.parentid')->orderBy('c.catorder')->first();
-
-        $recommends = Information::select('id')->where('catid', 1)
-            ->skip(0)->take(6)->orderByDesc('begintime')->get();
-
+//        $query = Category::from('category as c')->select([
+//            'c.catid',
+//            'c.modid',
+//            'c.dir_typename',
+//            'c.catname',
+//            'c.usecoin',
+//            'c.parentid',
+//            'c.if_view',
+//            'c.catorder',
+//            'c.template_info',
+//            DB::raw('COUNT( my_s.catid ) AS has_children')
+//        ])->leftjoin('category as s', 's.parentid', '=', 'c.catid')->groupBy('c.catid')
+//            ->orderBy('c.parentid')->orderBy('c.catorder')->first();
+//
+//        $recommends = Information::select('id')->where('catid', 1)
+//            ->skip(0)->take(6)->orderByDesc('begintime')->get();
+        $recommends = $this->mymps_get_infos( 6, "", "", "", $row['catid'], "", "", "", false );;
         return $this->success([
             'site_name' => config('custom.SiteName'),
             'breadcrumbs' => $parentcats,
             'detail' => $row,
-            'city' => $city
+            'city' => $city,
+            'recommends' => $recommends,
         ]);
+    }
+
+    /**
+     * copy原来的逻辑
+     *
+     * @param int $num
+     * @param null $info_level
+     * @param null $upgrade_type
+     * @param null $userid
+     * @param null $catid
+     * @param null $certify
+     * @param null $if_hot
+     * @param null $tel
+     * @param null $cityid
+     * @return array
+     */
+    protected function mymps_get_infos($num=10,$info_level=NULL,$upgrade_type=NULL,$userid=NULL,$catid=NULL,$certify=NULL,$if_hot=NULL,$tel=NULL,$cityid=NULL){
+        $db_mymps = 'my_';
+        $where = '';
+        $where .= !$info_level ? 'WHERE (a.info_level =1 OR a.info_level = 2)':'WHERE a.info_level = '.$info_level;
+        $where .= $userid	? ' AND a.userid = "'.$userid.'" ' : '';
+        $where .= $certify	? ' AND a.certify = "'.$certify.'" ' : '';
+        $where .= $tel		? ' AND a.tel = "'.$tel.'" ' : '';
+        $where .= $catid	? ' AND '.$this->get_children($catid,'a.catid') : '';
+        $where .= $cityid > 0 ? ' AND a.cityid = "'.$cityid.'" ' : '';
+
+        if($upgrade_type == 1){
+            $where .= " AND a.upgrade_type_list = 2 ";
+        } elseif($upgrade_type == 2){
+            $where .= " AND a.upgrade_type = 2 ";
+        } elseif($upgrade_type == 3){
+            $where .= " AND a.upgrade_type_index = 2 ";
+        }
+
+        $where .= !empty($sql) ? $sql	: '';
+        $orderby = $if_hot ? " ORDER BY a.hit DESC " : " ORDER BY a.begintime DESC ";
+        $info_list = array();
+        $idin = $this->get_page_idin("id","SELECT a.id FROM `{$db_mymps}information` AS a {$where} {$orderby}",$num);
+
+        if($idin){
+            $sql = "SELECT a.id,a.contact_who,a.danwei,a.title,a.content,a.begintime,a.catid,a.info_level,a.hit,a.dir_typename,a.ifred,a.ifbold,a.userid,a.catid,a.cityid,a.catname,a.img_path FROM `{$db_mymps}information` AS a WHERE id IN ($idin) {$orderby}";
+            $do_mymps = DB::select($sql);
+//            while($row = $db -> fetchRow($do_mymps)){
+            foreach ($do_mymps as $row){
+                $arr['id']        = $row['id'];
+                $arr['danwei']    = $row['danwei'];
+                $arr['catid']     = $row['catid'];
+                $arr['title']     = $row['title'];
+                $arr['content']   = clear_html($row['content']);
+                $arr['ifred']     = $row['ifred'];
+                $arr['ifbold']    = $row['ifbold'];
+                $arr['hit']    	  = $row['hit'];
+                $arr['begintime'] = $row['begintime'];
+                $arr['img_path']  = $row['img_path'];
+                $arr['catname']   = $row['catname'];
+                $arr['info_level']= $row['info_level'];
+                $arr['userid']    = $row['userid'];
+                $arr['contact_who']= $row['contact_who'];
+                $info_list[]      = $arr;
+            }
+        }
+        return $info_list;
+    }
+
+    public function get_page_idin($column='id',$sql='',$cfg_page=''){
+        global $page,$per_page,$per_screen,$pages_num,$rows_num,$mymps_global,$db,$db_mymps;
+        $page = (empty($page) || $page <0 ||!is_numeric($page))?1:$page;
+        $per_page = $cfg_page ? $cfg_page : ($per_page ? $per_page : config('custom.cfg_page_line'));
+        $per_screen = !isset($per_screen)?10:$per_screen;
+        $pages_num = ceil($rows_num/$per_page);
+
+        $query = DB::select($sql." limit ".(($page-1)*$per_page).", ".$per_page);
+        $idin = '';
+//        while($row = $db -> fetchRow($query)){
+        foreach ($query as $row){
+            $idin .= $row[$column].',';
+        }
+        $idin = $idin ? substr($idin,0,-1) : NULL;
+        return $idin;
+    }
+
+    protected function get_children($catid,$pre='a.catid'){
+        return $this->create_in(array_unique(array_merge(array($catid), array_keys($this->cat_list('category',$catid,0, false)))),$pre);
+    }
+    /**
+     * 获得指定分类下的子分类的数组
+     *
+     * @access  public
+     * @param   int     $catid     分类的ID
+     * @param   int     $selected   当前选中分类的ID
+     * @param   boolean $re_type    返回的类型: 值为真时返回下拉列表,否则返回数组
+     * @param   int     $level      限定返回的级数。为0时返回所有级数
+     * @param   int     $is_show_all 如果为true显示所有分类，如果为false隐藏不可见分类。
+     * @return  mix
+     */
+    protected function cat_list($type = 'category',$catid = 0, $selected = 0, $re_type = true, $level = 0, $is_show_all = true){
+        $db_mymps = 'my_';
+        if(in_array($type,array('area','corp'))){
+            $sql = "SELECT c.".$type."id, c.".$type."name, c.parentid, c.".$type."order, COUNT(s.".$type."id) AS has_children FROM `{$db_mymps}".$type."` AS c LEFT JOIN `{$db_mymps}".$type."` AS s ON s.parentid=c.".$type."id GROUP BY c.".$type."id ORDER BY c.parentid, c.".$type."order ASC";
+        }elseif($type == 'category') {
+            $sql = "SELECT c.catid, c.modid, c.dir_typename, c.dir_typename, c.catname,c.usecoin, c.parentid, c.if_view, c.catorder, c.template_info, COUNT(s.catid) AS has_children FROM `{$db_mymps}".$type."` AS c LEFT JOIN `{$db_mymps}".$type."` AS s ON s.parentid=c.catid GROUP BY c.catid ORDER BY c.parentid, c.catorder ASC";
+        }else {
+            $sql = "SELECT c.catid, c.dir_typename, c.dir_typename, c.catname, c.parentid, c.if_view, c.catorder, COUNT(s.catid) AS has_children FROM `{$db_mymps}".$type."` AS c LEFT JOIN `{$db_mymps}".$type."` AS s ON s.parentid=c.catid GROUP BY c.catid ORDER BY c.parentid, c.catorder ASC";
+        }
+
+        $res = DB::select($sql);
+        $sql = NULL;
+
+        if (empty($res) == true){
+            return $re_type ? '' : array();
+        }
+
+        $options = $this->cat_options($type, $catid, $res); // 获得指定分类下的子分类的数组
+
+        $children_level = 99999; //大于这个分类的将被删除
+        if ($is_show_all == false){
+            foreach ($options as $key => $val){
+                if ($val['level'] > $children_level){
+                    unset($options[$key]);
+                }else{
+                    if ($val['is_show'] == 0){
+                        unset($options[$key]);
+                        if ($children_level > $val['level']){
+                            $children_level = $val['level']; //标记一下，这样子分类也能删除
+                        }
+                    }else{
+                        $children_level = 99999; //恢复初始值
+                    }
+                }
+            }
+        }
+
+        /* 截取到指定的缩减级别 */
+        if ($level > 0){
+            if ($catid == 0){
+                $end_level = $level;
+            }else{
+                $first_item = reset($options); // 获取第一个元素
+                $end_level  = $first_item['level'] + $level;
+            }
+
+            /* 保留level小于end_level的部分 */
+            foreach ($options AS $key => $val){
+                if ($val['level'] >= $end_level){
+                    unset($options[$key]);
+                }
+            }
+        }
+
+        /****************/
+        /*如果为地区分类或商家分类*/
+        /****************/
+        if(in_array($type,array('area','corp'))){
+            if ($re_type == true){
+                $select = '';
+                if(is_array($options)){
+                    foreach ($options AS $var){
+                        $select .= '<option value="' . $var[$type.'id'] . '" ';
+                        if(is_array($selected)){
+                            $select .= in_array($var[$type.'id'],$selected) ? "selected='ture' style='background-color:#6eb00c; color:white!important;'" : '';
+                        } else {
+                            $select .= ($selected == $var[$type.'id']) ? "selected='ture' style='background-color:#6eb00c; color:white!important;'" : '';
+                        }
+                        $select .= '>';
+                        if ($var['level'] > 0){
+                            $select .= str_repeat('&nbsp;', $var['level'] * 4);
+                        }
+                        $select .= '└ '.mhtmlspecialchars($var[$type.'name'], ENT_QUOTES) . '</option>';
+                    }
+                }
+
+                return $select;
+            }else{
+                if(is_array($options)){
+                    foreach ($options AS $key => $value){
+                        $options[$key]['url'] = $value[$type.'id'];
+                    }
+                }
+                return $options;
+            }
+
+            /****************/
+            /*如果为信息栏目或新闻栏目分类*/
+            /****************/
+        } else {
+            if ($re_type == true){
+                $select = '';
+                foreach ($options AS $var){
+                    $select .= '<option value="' . $var['catid'] . '" ';
+                    if(is_array($selected)){
+                        $select .= in_array($var['catid'],$selected) ? "selected='ture' style='background-color:#6eb00c; color:white!important;'" : '';
+                    } else {
+                        $select .= ($selected == $var['catid']) ? "selected='ture' style='background-color:#6eb00c; color:white!important;'" : '';
+                    }
+                    $select .= '>';
+                    if ($var['level'] > 0){
+                        $select .= str_repeat('&nbsp;', $var['level'] * 4);
+                    }
+                    $select .= '└ '.mhtmlspecialchars($var['catname'], ENT_QUOTES) . '</option>';
+                }
+                return $select;
+            }else{
+                foreach ($options AS $key => $value){
+                    $options[$key]['url'] = $value['catid'];
+                }
+                return $options;
+            }
+        }
+    }
+
+    protected function create_in($item_list, $field = '')
+    {
+        if (empty($item_list)){
+            return $field . " IN ('') ";
+        }else{
+            if (!is_array($item_list)){
+                $item_list = explode(',', $item_list);
+            }
+            $item_list = array_unique($item_list);
+            $item_list_tmp = '';
+            foreach ($item_list AS $item){
+                if ($item !== ''){
+                    $item_list_tmp .= $item_list_tmp ? ",'$item'" : "'$item'";
+                }
+            }
+            if (empty($item_list_tmp)){
+                return $field . " IN ('') ";
+            }else{
+                return $field . ' IN (' . $item_list_tmp . ') ';
+            }
+        }
+    }
+
+    /**
+     * 过滤和排序所有分类，返回一个带有缩进级别的数组
+     *
+     * @access  private
+     * @param   int     $catid     上级分类ID
+     * @param   array   $arr        含有所有分类的数组
+     * @param   int     $level      级别
+     * @return  void
+     */
+    protected function cat_options($type='category',$spec_cat_id, $arr)
+    {
+        $cat_options = array();
+
+        if (isset($cat_options[$spec_cat_id])){
+            return $cat_options[$spec_cat_id];
+        }
+
+        if (!isset($cat_options[0])){
+            $level = $last_cat_id = 0;
+            $options = $cat_id_array = $level_array = array();
+            $data = false;
+
+            if ($data === false){
+                while (!empty($arr)){
+                    foreach ($arr AS $key => $value){
+
+                        $cat_id = $type == 'area' ? $value['areaid'] : ($type == 'corp' ? $value['corpid'] : $value['catid']);
+                        if ($level == 0 && $last_cat_id == 0){
+                            if ($value['parentid'] > 0){
+                                break;
+                            }
+                            $options[$cat_id]          = $value;
+                            $options[$cat_id]['level'] = $level;
+                            $options[$cat_id]['id']    = $cat_id;
+                            $options[$cat_id]['name']  = $type == 'category' ? $value['catname'] : $value[$type.'name'];
+                            unset($arr[$key]);
+
+                            if ($value['has_children'] == 0){
+                                continue;
+                            }
+                            $last_cat_id  = $cat_id;
+                            $cat_id_array = array($cat_id);
+                            $level_array[$last_cat_id] = ++$level;
+                            continue;
+                        }
+
+                        if ($value['parentid'] == $last_cat_id){
+                            $options[$cat_id]          = $value;
+                            $options[$cat_id]['level'] = $level;
+                            $options[$cat_id]['id']    = $cat_id;
+                            $options[$cat_id]['name']  = $type == 'category' ? $value['catname'] : $value[$type.'name'];
+                            unset($arr[$key]);
+
+                            if ($value['has_children'] > 0){
+                                if (end($cat_id_array) != $last_cat_id){
+                                    $cat_id_array[] = $last_cat_id;
+                                }
+                                $last_cat_id    = $cat_id;
+                                $cat_id_array[] = $cat_id;
+                                $level_array[$last_cat_id] = ++$level;
+                            }
+                        } elseif ($value['parentid'] > $last_cat_id){
+                            break;
+                        }
+                    }
+
+                    $count = count($cat_id_array);
+                    if ($count > 1){
+                        $last_cat_id = array_pop($cat_id_array);
+                    }elseif ($count == 1){
+                        if ($last_cat_id != end($cat_id_array)){
+                            $last_cat_id = end($cat_id_array);
+                        }else{
+                            $level = 0;
+                            $last_cat_id = 0;
+                            $cat_id_array = array();
+                            continue;
+                        }
+                    }
+
+                    if ($last_cat_id && isset($level_array[$last_cat_id])){
+                        $level = $level_array[$last_cat_id];
+                    }else{
+                        $level = 0;
+                    }
+                }
+            }else{
+                $options = $data;
+            }
+            $cat_options[0] = $options;
+        }else{
+            $options = $cat_options[0];
+        }
+
+        if (!$spec_cat_id){
+            return $options;
+        }else{
+            if (empty($options[$spec_cat_id])){
+                return array();
+            }
+
+            $spec_cat_id_level = $options[$spec_cat_id]['level'];
+
+            foreach ($options AS $key => $value){
+                if ($key != $spec_cat_id){
+                    unset($options[$key]);
+                }else{
+                    break;
+                }
+            }
+
+            $spec_cat_id_array = array();
+            foreach ($options AS $key => $value){
+                if (($spec_cat_id_level == $value['level'] && ($type == 'area' ? $value['areaid'] :$value['catid']) != $spec_cat_id) ||
+                    ($spec_cat_id_level > $value['level'])){
+                    break;
+                }else{
+                    $spec_cat_id_array[$key] = $value;
+                }
+            }
+            $cat_options[$spec_cat_id] = $spec_cat_id_array;
+
+            return $spec_cat_id_array;
+        }
     }
 }

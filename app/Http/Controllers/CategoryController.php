@@ -51,6 +51,12 @@ class CategoryController extends Controller
         return $this->success(array_values($cat_arr));
     }
 
+    /**
+     * 分类搜索条件信息
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function searConfig(Request $request){
         $rules = [
             'catid' => 'required|int',
