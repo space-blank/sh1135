@@ -25,6 +25,8 @@ class Category extends BaseModel
 
 
     public static function getConfig($modid){
+        $sign = [];
+        $arr = [];
         $typemodels = InfoTypemodels::select(['id', 'options'])->where('id', $modid)->first();
         if ($typemodels) {
             $typeOptions = InfoTypeoptions::select([
@@ -32,10 +34,16 @@ class Category extends BaseModel
                 'title',
                 'identifier',
                 'type',
-                'rules'
-            ])->whereIn('optionid', explode(',', $typemodels['options']))->where('search', 'on')->get();
-            $arr = [];
+                'rules',
+                'search'
+            ])->whereIn('optionid', explode(',', $typemodels['options']))
+//                ->where('search', 'on')
+                ->get();
+
             foreach ($typeOptions as $nrow) {
+                if($nrow['search']=='on'){
+                    $sign[] = $nrow['identifier'];
+                }
                 $extra = utf8_unserialize($nrow['rules']);
                 if (in_array($nrow['type'], ['select', 'radio', 'checkbox', 'number'])) {
                     if (is_array($extra)) {
@@ -50,14 +58,15 @@ class Category extends BaseModel
                                 }
                             }
                             $arr[$nrow['optionid']]['title'] = $nrow['title'];
-//                                $arr[$nrow['optionid']]['type']  = $nrow['type'];
+                            $arr[$nrow['optionid']]['type']  = $nrow['type'];
                             $arr[$nrow['optionid']]['identifier'] = $nrow['identifier'];
-//                                $arr[$row['id']][$nrow['optionid']]['publish'] = get_info_var_type($nrow['type'],$nrow['identifier'],$extr,$get_value,'front');
                         }
                     }
                 }
             }
         }
+
+        return [$sign, $arr];
     }
 
     /**

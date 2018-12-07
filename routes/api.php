@@ -35,6 +35,7 @@ Route::group(['prefix' => 'v1'], function () {
     //搜索的内容列表
     Route::group(['prefix' => 'information'], function () {
         Route::get('list', 'InformationController@getInformation');
+        Route::get('sort', 'InformationController@getListInCate');
         Route::get('detail', 'InformationController@getDetail');
     });
 

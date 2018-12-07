@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Logic\PaginateLogic;
+use App\Http\Models\Area;
 use App\Http\Models\Category;
 use App\Http\Models\City;
 use App\Http\Models\InfoImg;
 use App\Http\Models\Information;
+use App\Http\Models\InfoTypemodels;
 use App\Http\Models\InfoTypeoptions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -83,6 +85,173 @@ class InformationController extends Controller
     }
 
     /**
+     * 分类搜索结果
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getListInCate(Request $request){
+        $rules = [
+            'catid' => 'required|int',
+            'cityid' => 'required|int',
+            'page' => 'int',
+            'pageSize' => 'int'
+        ];
+        $this->validate($request, $rules);
+
+        $catid = $request->catid ?: '';
+        $cityid = $request->cityid ?: '';
+        $page = (int)$request->page ?: 1;
+        $pageSize = (int)$request->pageSize ?: 10;
+        //导航
+        $breadCrumbs = Category::getParentsByNode($catid);
+        $cat = Category::select([
+            'catid',
+            'catname',
+            'parentid',
+            'modid'
+        ])->where('catid', $catid)->first();
+        $db_mymps = 'my_';
+        //city
+        $city = City::select(['cityid', 'cityname'])->find($cityid);
+
+        if(!$cat){
+            return $this->fail('30002');
+        }
+        //分类条件
+        $catelist = Category::select([
+            'catid',
+            'catname'
+        ])->where('parentid', $cat['catid'])->get();
+        $conditions = [];
+        if($catelist->isEmpty()){
+            $catelist = Category::select([
+                'catid',
+                'catname'
+            ])->where('parentid', $cat['parentid'])->get();
+        }
+        $conditions['category'] = $catelist;
+        //地域条件
+        $area = Area::select(['areaid', 'areaname'])->where('cityid', $cityid)->get();
+        $conditions['area'] = $area;
+        //动态的条件
+        /*** start ***/
+        $modid = $cat['modid'];
+        $conditionConfig = Category::getConfig($modid);
+        $allow_identifier = $conditionConfig[0];
+        $allow_identifiers = array_merge(["mod", "catid", "cityid", "areaid", "streetid", "lat", "lng", "distance"], $allow_identifier);
+        $mymps_extra_model = $conditionConfig[1];
+        $conditions['others'] = array_values($mymps_extra_model);
+        /*** end ***/
+        //完全复制原来的逻辑
+        DB::connection()->enableQueryLog();
+        $sq = $s = "";
+        if ( 1 < $cat['modid'] )
+        {
+            $s = "LEFT JOIN `".$db_mymps."information_{$cat['modid']}` AS g ON a.id = g.id";
+            foreach ( $_GET as $key => $val )
+            {
+                if ( !in_array( $key, $allow_identifier ) || empty( $key ) )
+                {
+                    //$sq .= " AND g.`".$key."` = '{$val}' ";
+                }
+            }
+        }
+
+        $cate_limit = " AND ".$this->get_children( $catid );
+
+        $lat = isset( $lat ) ? ( double )$lat : "";
+        $lng = isset( $lng ) ? ( double )$lng : "";
+        $distance = isset( $distance ) ? ( double )$distance : "";;
+        $distance = !in_array( $distance, array( "0.5", "1", "3", "5" ) ) ? "0" : $distance;
+
+        $city_limit = empty( $city['cityid'] ) ? "" : " AND a.cityid = '".$city['cityid']."'";
+        if ( $distance )
+        {
+            $city_limit .= " AND latitude < '".( $lat + $distance )."' AND latitude > '".( $lat - $distance )."' AND longitude < '".( $lng + $distance )."' AND longitude > '".( $lng - $distance )."'";
+        }
+        else
+        {
+            $city_limit .= empty( $areaid ) ? "" : " AND a.areaid = '".$areaid."'";
+            $city_limit .= empty( $streetid ) ? "" : " AND a.streetid = '".$streetid."'";
+        }
+
+        $orderby = $cat['parentid'] == 0 ? " ORDER BY a.upgrade_type DESC,a.begintime DESC" : " ORDER BY a.upgrade_type_list DESC,a.begintime DESC";
+
+        $countTmp = DB::select("SELECT COUNT(a.id) as totalnum FROM `".$db_mymps."information` AS a {$s} WHERE a.info_level > 0 {$sq}{$cate_limit}{$city_limit}");
+        if($countTmp){
+            $countTmp = $countTmp[0]['totalnum'];
+        }else{
+            $countTmp = 0;
+        }
+        $rows_num = $cat['totalnum'] = $countTmp;
+
+        $totalpage = ceil( $rows_num / $pageSize );
+
+        $num = intval( $page - 1 ) * $pageSize;
+        $idin = $this->get_page_idin( "id", "SELECT a.id FROM `".$db_mymps."information` AS a {$s} WHERE (a.info_level = 1 OR a.info_level = 2) {$sq}{$cate_limit}{$city_limit}{$orderby}", $pageSize);
+        $idin = $idin ? " AND a.id IN (".$idin.") " : "";
+        $sql = "SELECT a.* FROM ".$db_mymps."information AS a WHERE 1 {$idin} {$orderby}";
+
+        $infolist = $idin ? DB::select( $sql ) : array( );
+        if($infolist){
+            $ids = '';
+            foreach ( $infolist as $k => $row )
+            {
+                $arr['areaname'] = Area::select(['areaname'])->where('areaid', $row['areaid'])->value('areaname');
+                $arr['id'] = $row['id'];
+                $arr['title'] = $row['title'];
+                $arr['hit'] = $row['hit'];
+                $arr['img_path'] = $row['img_path'];
+                $arr['ifred'] = $row['ifred'];
+                $arr['ifbold'] = $row['ifbold'];
+                $arr['img_count'] = $row['img_count'];
+                $arr['upgrade_type'] = !$cat['parentid'] ? $row['upgrade_type'] : $row['upgrade_type_list'];
+                $arr['contact_who'] = $row['contact_who'];
+                $arr['begintime'] = $row['begintime'];
+                $arr['danwei'] = $row['danwei'];
+                $arr['zhuanrang'] = $row['zhuangrang'];
+                $arr['catname'] = $row['catname'];
+                $info_list[$row['id']] = $arr;
+                $ids .= $row['id'].",";
+            }
+            if ( 1 < $cat['modid'] || $idin )
+            {
+                $des = $this->get_info_option_array();
+                $extra = DB::select( "SELECT a.* FROM `".$db_mymps."information_{$cat['modid']}` AS a WHERE 1 {$idin}" );
+                foreach ( $extra as $k => $v )
+                {
+                    unset( $v['iid'] );
+                    unset( $v['content'] );
+
+                    foreach ( $v as $u => $w )
+                    {
+                        if($u == 'id') continue;
+                        $g = get_info_option_titval( $des[$u], $w );
+                        $info_list[$v['id']]['extra'][$u] = $g;
+                        /*if(!$g){
+                            if($g['title']=='面积'){
+                                $g['value'] = '<span style="color:red;font-size:16px;">'.str_replace('平方','',$g['value'])."</span>平方";
+                            }
+                            if($g['title']=='价格'){
+                                $g['value'] = str_replace('元','',$g['value']);
+                            }
+                            $info_list[$v['id']]['extra'][$u] = $g;
+                        }*/
+                    }
+                }
+            }
+        }
+        $log = DB::getQueryLog();
+//        print_r($log);die;
+        return $this->success([
+            'breadcrumbs' => $breadCrumbs,
+            'conditions' => $conditions,
+            'info' => array_values($info_list)
+        ]);
+    }
+
+    /**
      * 获取信息详情
      *
      * @param Request $request
@@ -90,11 +259,13 @@ class InformationController extends Controller
      */
     public function getDetail(Request $request){
         $rules = [
-            'iid' => 'required|int'
+            'iid' => 'required|int',
+            'cityid' => 'int'
         ];
         $this->validate($request, $rules);
 
         $id = (int)$request->iid;
+        $cityId = (int)$request->cityid;
         $row = Information::select([
             'id',
             'catid',
@@ -113,7 +284,7 @@ class InformationController extends Controller
             return $this->fail('30002');
         }
 
-        $city = City::select(['cityid', 'cityname'])->where('cityid', $row['cityid'])->first();
+//        $city = City::select(['cityid', 'cityname'])->where('cityid', $row['cityid'])->first();
         $row['endtime'] = get_info_life_time( $row['endtime'] );
         $row['contactview'] = $row['endtime'] == "<font color=red>已过期</font>" && config('custom.cfg_info_if_gq') != 1 ? 0 : 1;
         $rowr = Category::select(['catid', 'parentid', 'catname', 'template_info', 'modid', 'usecoin'])->find($row['catid']);
@@ -170,14 +341,57 @@ class InformationController extends Controller
 //
 //        $recommends = Information::select('id')->where('catid', 1)
 //            ->skip(0)->take(6)->orderByDesc('begintime')->get();
-        $recommends = $this->mymps_get_infos( 6, "", "", "", $row['catid'], "", "", "", false );;
+        $recommends = $this->mymps_get_infos( 6, "", "", "", $row['catid'], "", "", "", $cityId ?: false );;
+        $newRec = [];
+        foreach ($recommends as $r){
+            $temp = [
+                'id' => $r['id'],
+                'title' => cutstr($r['title'],26),
+                'begintime' => get_format_time($r['begintime'])
+            ];
+            $newRec[] = $temp;
+        }
         return $this->success([
             'site_name' => config('custom.SiteName'),
             'breadcrumbs' => $parentcats,
             'detail' => $row,
-            'city' => $city,
-            'recommends' => $recommends,
+//            'city' => $city,
+            'recommends' => $newRec
         ]);
+    }
+
+    function get_info_option_array(){
+        $infoOptions = InfoTypeoptions::select(['title', 'identifier', 'rules', 'type'])
+            ->where('classid', '>', 0)->orderByDesc('displayorder')->get();
+        $mymps = [];
+        foreach ($infoOptions as $row){
+            $mymps[$row['identifier']]['title'] = $row['title'];
+            $mymps[$row['identifier']]['rules'] = $row['rules'];
+            $mymps[$row['identifier']]['type'] = $row['type'];
+        }
+        return $mymps;
+    }
+    /**
+     * 获得各模型允许提交的参数
+     *
+     * @return bool|mixed
+     */
+    function allow_identifier(){
+        $query 	= $GLOBALS['db'] -> query("SELECT id,options  FROM `{$GLOBALS['db_mymps']}info_typemodels` ORDER BY displayorder DESC");
+        $query = InfoTypemodels::select(['id', 'options'])->orderByDesc('displayorder')->get();
+//        while($row = $GLOBALS['db'] -> fetchRow($query)){
+        foreach ($query as $row){
+            $option = explode(",",$row[options]);
+            foreach($option as $w => $u){
+                $newrow = $GLOBALS['db'] -> getRow("SELECT identifier,search FROM `{$GLOBALS['db_mymps']}info_typeoptions` WHERE optionid='$u'");
+
+                if($newrow['search']=='on'){
+                    $arr[$row[id]]['identifier'][] = $newrow['identifier'];
+                }
+            }
+            $res = $arr;
+        }
+        return $res;
     }
 
     /**

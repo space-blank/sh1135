@@ -1903,6 +1903,7 @@ function get_info_option_titval($option,$value,$class="mayi"){
 			$new_value		= $new_array[$value];
 			$value			= $new_value;
 		}elseif($option['type'] == 'checkbox'){
+            $nvalue = '';
 			$value = explode(",",$value);
 			$tmp = $charset == 'utf-8' ? utf8_unserialize($option['rules']) : unserialize($option['rules']);
 			foreach ($value as $m =>$n){
